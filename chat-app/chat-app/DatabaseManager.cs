@@ -21,7 +21,6 @@ namespace Server
 
             CreateTables(cmd);
             InitDefaults(cmd);
-
         }
         private static void CreateTables(SQLiteCommand cmd)
         {

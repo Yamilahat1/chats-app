@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace Server
 {
@@ -21,39 +22,36 @@ namespace Server
             try
             {
                 listener.Bind(localEndPoint);
-                listener.Listen(MAX_CLIENTS); // Client list
+                listener.Listen(MAX_CLIENTS);
+                Console.WriteLine($">> Server is up to snuff on port {PORT}");
 
                 while (true)
                 {
-                    Console.WriteLine("Waiting connection...");
                     Socket clientSocket = listener.Accept();
+                    Console.WriteLine($">> A wild {clientSocket} appears!");
+                    // Just create a thread to handle the new client and detach
+                    Thread t = new Thread(() => HandleClient(clientSocket));
+                    t.Start();
 
-                    byte[] bytes = new Byte[BUFFER_SIZE];
-                    string data = null;
 
-                    while (true)
-                    {
-
-                        int numByte = clientSocket.Receive(bytes);
-
-                        data += Encoding.ASCII.GetString(bytes, 0, numByte);
-
-                        if (data.IndexOf("<EOF>") > -1) break;
-                    }
-
-                    Console.WriteLine("Text received -> {0} ", data);
-                    byte[] message = Encoding.ASCII.GetBytes("Test Server");
-
-                    clientSocket.Send(message);
-
-                    clientSocket.Shutdown(SocketShutdown.Both);
-                    clientSocket.Close();
                 }
             }
 
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
+            }
+        }
+        private static void HandleClient(Socket clientSocket)
+        {
+            try
+            {
+                // Todo: Handle client...
+            } catch(Exception)
+            {
+                // If client disconnects or something
+                clientSocket.Shutdown(SocketShutdown.Both);
+                clientSocket.Close();
             }
         }
 
