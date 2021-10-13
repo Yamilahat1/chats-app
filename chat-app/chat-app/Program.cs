@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Server
 {
@@ -16,7 +17,8 @@ namespace Server
 
             try
             {
-                Server.Start();
+                Thread t = new Thread(() => Server.Start());
+                t.Start();
             } catch (Exception e)
             {
                 Console.WriteLine($"Server error: {e}");
