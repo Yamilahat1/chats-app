@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace chat_app
+namespace Server
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Server.Start();
         }
     }
 }
