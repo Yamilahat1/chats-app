@@ -6,7 +6,14 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            Server.Start();
+            // Server.Start();
+            try
+            { 
+                DatabaseManager.InitDatabase();
+            } catch (Exception e)
+            {
+                Console.WriteLine($"There was an error initializing the database: {e}");
+            }
         }
     }
 }
