@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Threading;
+using Utilities;
 
 namespace Server
 {
@@ -32,8 +33,6 @@ namespace Server
                     // Just create a thread to handle the new client and detach
                     Thread t = new Thread(() => HandleClient(clientSocket));
                     t.Start();
-
-
                 }
             }
 
@@ -44,9 +43,14 @@ namespace Server
         }
         private static void HandleClient(Socket clientSocket)
         {
+            RequestResult handler;
+            handler.newHandler = null;
             try
             {
-                // Todo: Handle client...
+                while (true)
+                {
+
+                }
             } catch(Exception)
             {
                 // If client disconnects or something
