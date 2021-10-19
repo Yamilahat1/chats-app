@@ -7,7 +7,7 @@ namespace XmlManagement
 {
     static class XmlManagement
     {
-		public static string XmlDeserialization(string root, Dictionary<string, string> data)
+		public static string Serialization(string root, Dictionary<string, string> data)
 		{
 			string str = string.Format("<{0}>", root);
 			foreach (KeyValuePair<string, string> curr in data)
@@ -17,7 +17,7 @@ namespace XmlManagement
 
 			return string.Format("{0}</{1}>", str, root);
 		}
-		public static Dictionary<string, string> XmlSerialization(string xml)
+		public static Dictionary<string, string> XmlDeserialization(string xml)
 		{
 			var res = new Dictionary<string, string>();
 			Regex rg = new Regex(@"<(?<Tag>\w+)>(?<Data>[^<]*)");

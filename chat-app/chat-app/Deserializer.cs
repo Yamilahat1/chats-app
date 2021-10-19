@@ -5,6 +5,7 @@ using Utilities;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using System.IO;
+using XmlManagement;
 
 namespace Deserializer
 {
@@ -21,10 +22,18 @@ namespace Deserializer
         public LoginRequest deserializeLoginRequest(List<char> buff)
         {
             LoginRequest obj;
-            XDocument xml = XDocument.Parse(buff.ExtractData()); // Create an XML "file" variable
-            XmlSerializer reader = new XmlSerializer(typeof(LoginRequest));
-            StreamReader file = new StreamReader(xml);
-            obj.username = xml.
+            Dictionary<string, string> parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
+            obj.username = parsed["Username"];
+            obj.password = parsed["Password"];
+            return obj;
+        }
+        public SignupRequest deserializeSignupRequest(List<char> buff)
+        {
+            SignupRequest obj;
+            var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
+            obj.username = parsed["Username"];
+            obj.password = parsed["Password"];
+            return obj;
         }
     }
 }
