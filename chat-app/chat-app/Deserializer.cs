@@ -17,9 +17,9 @@ namespace Deserializer
         }
     }
 
-    class Deserializer
+    public class Deserializer
     {
-        public LoginRequest deserializeLoginRequest(List<char> buff)
+        public static LoginRequest deserializeLoginRequest(List<char> buff)
         {
             LoginRequest obj;
             Dictionary<string, string> parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
@@ -27,7 +27,7 @@ namespace Deserializer
             obj.password = parsed["Password"];
             return obj;
         }
-        public SignupRequest deserializeSignupRequest(List<char> buff)
+        public static SignupRequest deserializeSignupRequest(List<char> buff)
         {
             SignupRequest obj;
             var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());

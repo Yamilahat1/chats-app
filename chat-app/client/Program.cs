@@ -13,7 +13,17 @@ namespace Client
 		{
 			ExecuteClient();
 		}
-
+		static void Send(Socket socket, string msg)
+        {
+			byte[] messageSent = Encoding.ASCII.GetBytes(msg); // Create message
+			socket.Send(messageSent);
+		}
+		static string Recv(Socket socket)
+        {
+			byte[] messageReceived = new byte[1024];
+			int byteRecv = socket.Receive(messageReceived);
+			return Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
+		}
 		static void ExecuteClient()
 		{
 			try
@@ -22,27 +32,32 @@ namespace Client
 				IPAddress ipAddr = ipHost.AddressList[0];
 				IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 8888);
 
-				Socket sender = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+				Socket socket = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+				string input;
 
 				try
 				{
-					sender.Connect(localEndPoint);
+					while(!socket.Connected)
+                    {
+						try
+						{
+							socket.Connect(localEndPoint);
+						}
+						catch { }
+                    }
+					Console.WriteLine("Connected!");
 
-					Console.WriteLine("Socket connected to -> {0} ",
-								sender.RemoteEndPoint.ToString());
+					while(true)
+                    {
+						Console.Write("Send: ");
+						input = Console.ReadLine();
+						if (input == "quit") break;
+						Send(socket, input);
+						Console.WriteLine("Received: " + Recv(socket));
+                    }
 
-
-					byte[] messageSent = Encoding.ASCII.GetBytes("Test Client<EOF>"); // Create message
-					int byteSent = sender.Send(messageSent);
-
-					byte[] messageReceived = new byte[1024]; // Create data buffer
-
-
-					int byteRecv = sender.Receive(messageReceived);
-					Console.WriteLine("Message from Server -> {0}", Encoding.ASCII.GetString(messageReceived, 0, byteRecv));
-
-					sender.Shutdown(SocketShutdown.Both);
-					sender.Close();
+					socket.Shutdown(SocketShutdown.Both);
+					socket.Close();
 				}
 
 				// Manage of Socket's Exceptions

@@ -2,67 +2,82 @@
 using System.Data.SQLite;
 using System.IO;
 
+// Todo: add mutex
 namespace Server
 {
-    class DatabaseManager
+    public class SqliteDatabase
     {
+        private static SQLiteCommand m_db;
         private const string LOCATION = "D:\\test.db";
-        public static void InitDatabase()
+        protected SqliteDatabase()
         {
             // So we don't accidently override existing database when starting the server.
             if (File.Exists(LOCATION)) return;
 
             string cs = @"URI=file:D:\test.db";
-
             using var con = new SQLiteConnection(cs);
             con.Open();
 
-            using var cmd = new SQLiteCommand(con);
-
-            CreateTables(cmd);
-            InitDefaults(cmd);
+            m_db = new SQLiteCommand(con);
+            InitDatabase();
         }
-        private static void CreateTables(SQLiteCommand cmd)
+        private static void InitDatabase()
+        {
+            CreateTables();
+            InitDefaults();
+        }
+        protected static void CreateTables()
         {
             // Create user table
-            cmd.CommandText = @"CREATE TABLE tUser(id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, nickname TEXT, status TEXT);";
-            cmd.ExecuteNonQuery();
+            m_db.CommandText = @"CREATE TABLE tUser(id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, nickname TEXT, status TEXT);";
+            m_db.ExecuteNonQuery();
 
             // Create chat table
-            cmd.CommandText = @"CREATE TABLE tChat(id INTEGER NOT NULL PRIMARY KEY, name TEXT, type BOOLEAN);";
-            cmd.ExecuteNonQuery();
+            m_db.CommandText = @"CREATE TABLE tChat(id INTEGER NOT NULL PRIMARY KEY, name TEXT, type BOOLEAN);";
+            m_db.ExecuteNonQuery();
 
-            cmd.CommandText = @"CREATE TABLE tParticipants(id INTEGER NOT NULL PRIMARY KEY, userID INTEGER, roomID INTEGER);";
-            cmd.ExecuteNonQuery();
+            m_db.CommandText = @"CREATE TABLE tParticipants(id INTEGER NOT NULL PRIMARY KEY, userID INTEGER, roomID INTEGER);";
+            m_db.ExecuteNonQuery();
 
-            cmd.CommandText = @"CREATE TABLE tMessage(id INTEGER NOT NULL PRIMARY KEY, roomID INTEGER, userID INTEGER, message TEXT);";
-            cmd.ExecuteNonQuery();
+            m_db.CommandText = @"CREATE TABLE tMessage(id INTEGER NOT NULL PRIMARY KEY, roomID INTEGER, userID INTEGER, message TEXT);";
+            m_db.ExecuteNonQuery();
         }
-        private static void InitDefaults(SQLiteCommand cmd)
+        protected static void InitDefaults()
         {
             // Example users
-            cmd.CommandText = "INSERT INTO tUser(username, password, nickname, status) VALUES ('bob', 'bob', 'Bob', 'hi im bob');";
-            cmd.ExecuteNonQuery();
-
-            cmd.CommandText = "INSERT INTO tUser(username, password, nickname, status) VALUES ('alice', 'alice', 'Alice', 'hi im alice');";
-            cmd.ExecuteNonQuery();
-
+            AddUser("Bob", "Bob");
+            AddUser("Alice", "Alice");
 
             // Example chat
-            cmd.CommandText = "INSERT INTO tChat(name, type) VALUES ('cool chat', false);";
-            cmd.ExecuteNonQuery();
+            m_db.CommandText = "INSERT INTO tChat(name, type) VALUES ('cool chat', false);";
+            m_db.ExecuteNonQuery();
 
-            cmd.CommandText = "INSERT INTO tParticipants(userID, roomID) VALUES (1, 1);";
-            cmd.ExecuteNonQuery();
+            m_db.CommandText = "INSERT INTO tParticipants(userID, roomID) VALUES (1, 1);";
+            m_db.ExecuteNonQuery();
 
-            cmd.CommandText = "INSERT INTO tParticipants(userID, roomID) VALUES (2, 1);";
-            cmd.ExecuteNonQuery();
+            m_db.CommandText = "INSERT INTO tParticipants(userID, roomID) VALUES (2, 1);";
+            m_db.ExecuteNonQuery();
 
-            cmd.CommandText = "INSERT INTO tMessage(roomID, userID, message) VALUES (1, 1, 'hi alice');";
-            cmd.ExecuteNonQuery();
+            m_db.CommandText = "INSERT INTO tMessage(roomID, userID, message) VALUES (1, 1, 'hi alice');";
+            m_db.ExecuteNonQuery();
 
-            cmd.CommandText = "INSERT INTO tMessage(roomID, userID, message) VALUES (1, 2, 'hi bob');";
-            cmd.ExecuteNonQuery();
+            m_db.CommandText = "INSERT INTO tMessage(roomID, userID, message) VALUES (1, 2, 'hi bob');";
+            m_db.ExecuteNonQuery();
+        }
+        private static void Execute(string query)
+        {
+            m_db.CommandText = query;
+            m_db.ExecuteNonQuery();
+        }
+        protected static bool DoesUserExist(string username)
+        {
+            m_db.CommandText = string.Format("SELECT * FROM tUser WHERE username = {0}", username);
+            SQLiteDataReader reader = m_db.ExecuteReader();
+            return reader.HasRows;
+        }
+        protected static void AddUser(string username, string password)
+        {
+            Execute(string.Format("INSERT INTO tUser(username, password, nickname, status) VALUES ('{0}', '{1}', '{0}', 'Amogus');", username, password));
         }
     }
 }

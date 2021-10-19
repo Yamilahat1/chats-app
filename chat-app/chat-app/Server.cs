@@ -4,6 +4,8 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Threading;
 using Utilities;
+using Handlers;
+using System.Text;
 
 namespace Server
 {
@@ -43,13 +45,19 @@ namespace Server
         }
         private static void HandleClient(Socket clientSocket)
         {
+            LoginHandler loginHandler = new LoginHandler();
             RequestResult handler;
             handler.newHandler = null;
+            string data;
             try
             {
                 while (true)
                 {
-
+                    // string data = Recv(clientSocket);
+                    // Send(clientSocket, "hello");
+                    data = Recv(clientSocket);
+                    Console.WriteLine("recv: " + data);
+                    Send(clientSocket, ";)");
                 }
             } catch(Exception)
             {
@@ -58,6 +66,20 @@ namespace Server
                 clientSocket.Close();
             }
         }
+        private static string Recv(Socket clientSocket)
+        {
+            byte[] bytes = new byte[BUFFER_SIZE];
+            string data = null;
 
+            int numByte = clientSocket.Receive(bytes);
+            data += Encoding.ASCII.GetString(bytes, 0, numByte);
+            Console.WriteLine(data);
+            return data;
+        }
+        private static void Send(Socket clientSocket, string msg)
+        {
+            byte[] message = Encoding.ASCII.GetBytes(msg);
+            clientSocket.Send(message);
+        }
     }
 }
