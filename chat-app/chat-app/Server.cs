@@ -47,17 +47,25 @@ namespace Server
         {
             LoginHandler loginHandler = new LoginHandler();
             RequestResult handler;
+            RequestInfo reqInfo;
+            RequestResult res;
             handler.newHandler = null;
-            string data;
+            string data = "";
+            string headers;
+            int msgLen;
+            List<char> buffer = new List<char>();
             try
             {
                 while (true)
                 {
-                    // string data = Recv(clientSocket);
-                    // Send(clientSocket, "hello");
-                    data = Recv(clientSocket);
-                    Console.WriteLine("recv: " + data);
-                    Send(clientSocket, ";)");
+                    headers = Recv(clientSocket, (int)Defines.LEN_END);
+                    msgLen = Convert.ToInt32(headers.Substring((int)Defines.LEN_BEGIN, (int)Defines.LEN_END - (int)Defines.LEN_BEGIN));
+                    if (msgLen > 0) data = Recv(clientSocket, msgLen);
+                    reqInfo.id = (uint)headers[(int)Defines.MSG_CODE] - '0';
+                    PushToBuffer(ref buffer, headers, data, msgLen);
+                    reqInfo.buffer = buffer;
+                    res = loginHandler.HandleRequest(reqInfo);
+                    Send(clientSocket, string.Join("", res.response.ToArray()));
                 }
             } catch(Exception)
             {
@@ -66,9 +74,14 @@ namespace Server
                 clientSocket.Close();
             }
         }
-        private static string Recv(Socket clientSocket)
+        private static void PushToBuffer(ref List<char> buffer, string headers, string msg, int msgLen)
         {
-            byte[] bytes = new byte[BUFFER_SIZE];
+            for (int i = 0; i < (int)Defines.LEN_END; i++) buffer.Add(headers[i]);
+            for (int i = 0; i < msgLen; i++) buffer.Add(msg[i]);
+        }
+        private static string Recv(Socket clientSocket, int size = BUFFER_SIZE)
+        {
+            byte[] bytes = new byte[size];
             string data = null;
 
             int numByte = clientSocket.Receive(bytes);

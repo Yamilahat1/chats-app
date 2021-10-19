@@ -18,7 +18,7 @@ namespace Managers
             this.status = status;
         }
     }
-    public class LoginManager : SqliteDatabase
+    public class LoginManager
     {
         private static List<User> m_loggedUsers = new List<User>();
 

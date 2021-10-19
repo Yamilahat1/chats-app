@@ -9,6 +9,7 @@ namespace Server
         {
             try
             {
+                SqliteDatabase.InitDatabase();
                 Thread t = new Thread(() => Server.Start());
                 t.Start();
             } catch (Exception e)

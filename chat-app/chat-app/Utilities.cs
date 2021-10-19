@@ -46,6 +46,9 @@ namespace Utilities
     }
     public enum Defines
     {
-        DATA_BEGIN = 5
+        LEN_END = 5,
+        DATA_BEGIN = LEN_END,
+        LEN_BEGIN = 1,
+        MSG_CODE = 0
     }
 }

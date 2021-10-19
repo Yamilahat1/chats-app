@@ -13,7 +13,7 @@ namespace Deserializer
     { 
         public static string ExtractData(this List<char> buff)
         {
-            return buff.ToString().Substring((int)Defines.DATA_BEGIN);
+            return string.Join("", buff.ToArray()).Substring((int)Defines.DATA_BEGIN);
         }
     }
 
