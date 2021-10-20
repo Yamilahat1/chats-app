@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.IO;
-
+using System.Security.Cryptography;
+using System.Text;
 // Todo: add mutex
 namespace Server
 {
@@ -12,22 +13,23 @@ namespace Server
         private const string LOCATION = "D:\\test.db";
         public static void InitDatabase()
         {
-            // So we don't accidently override existing database when starting the server.
-
             string cs = @"URI=file:D:\test.db";
             m_connection = new SQLiteConnection(cs);
             m_connection.Open();
 
             m_db = new SQLiteCommand(m_connection);
-            if (File.Exists(LOCATION)) return;
-            
-            CreateTables();
-            InitDefaults();
+            // if (File.Exists(LOCATION)) return;
+            try
+            {
+                CreateTables();
+                InitDefaults();
+            }
+            catch (Exception) { }
         }
         static void CreateTables()
         {
             // Create user table
-            m_db.CommandText = @"CREATE TABLE tUser(id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, nickname TEXT, status TEXT);";
+            m_db.CommandText = @"CREATE TABLE tUser(id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, salt TEXT, nickname TEXT, status TEXT);";
             m_db.ExecuteNonQuery();
 
             // Create chat table
@@ -72,7 +74,6 @@ namespace Server
             // m_db.CommandText = string.Format("SELECT * FROM tUser WHERE username = {0}", username);
             m_db.CommandText = string.Format("SELECT username FROM tUser");
 
-
             SQLiteDataReader reader = m_db.ExecuteReader();
             while(reader.Read())
             {
@@ -88,7 +89,45 @@ namespace Server
         }
         public static void AddUser(string username, string password)
         {
-            Execute(string.Format("INSERT INTO tUser(username, password, nickname, status) VALUES ('{0}', '{1}', '{0}', 'Amogus');", username, password));
+            string salt = Guid.NewGuid().ToString();
+            password = HashString(password, salt);
+            Execute(string.Format("INSERT INTO tUser(username, password, salt, nickname, status) VALUES ('{0}', '{1}', '{2}', '{0}', 'Amogus');", username, password, salt));
+        }
+        private static string HashString(string text, string salt)
+        {
+            using (var sha = new SHA256Managed())
+            {
+                byte[] textBytes = Encoding.UTF8.GetBytes(text + salt);
+                byte[] hashBytes = sha.ComputeHash(textBytes);
+                string hash = BitConverter.ToString(hashBytes).Replace("-", String.Empty);
+                return hash;
+            }
+        }
+        public static string GetUserSalt(string username)
+        {
+            string salt;
+            m_db.CommandText = string.Format("SELECT salt FROM tUser WHERE username='{0}';", username);
+            SQLiteDataReader reader = m_db.ExecuteReader();
+
+            if (!reader.HasRows) throw new Exception("User not found");
+
+            reader.Read();
+            salt = reader.GetValue(0).ToString();
+            reader.Close();
+            return salt;
+        }
+        public static bool LoginUser(string username, string password)
+        { 
+            string hashedPassword = HashString(password, GetUserSalt(username));
+            bool match = false;
+            m_db.CommandText = string.Format("SELECT password FROM tUser WHERE username='{0}';", username);
+            SQLiteDataReader reader = m_db.ExecuteReader();
+            if (!reader.HasRows) throw new Exception("User not found");
+
+            reader.Read();
+            match = reader.GetValue(0).ToString().Equals(hashedPassword);
+            reader.Close();
+            return match;
         }
     }
 }
