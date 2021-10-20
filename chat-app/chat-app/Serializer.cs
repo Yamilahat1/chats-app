@@ -31,5 +31,9 @@ namespace Serializer
         {
             return Serialize("Error", new Dictionary<string, string> { { "Message", res.msg } }, Codes.ERROR);
         }
+        public static List<char> SerializeResponse(LoginResponse res)
+        {
+            return Serialize("Login", new Dictionary<string, string> { { "Status", res.status.ToString() } }, Codes.LOGIN);
+        }
     }
 }

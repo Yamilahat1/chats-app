@@ -44,15 +44,23 @@ namespace Handlers
         }
         private RequestResult Login(RequestInfo reqInfo)
         {
-            RequestResult res;
+            RequestResult res = new RequestResult();
             LoginResponse loginRes;
             LoginRequest loginReq;
-
+            res.newHandler = null;
             loginReq = Deserializer.Deserializer.deserializeLoginRequest(reqInfo.buffer);
-            // Todo: check if user is already logged
 
+            if (!LoginManager.IsOnline(loginReq.username) && LoginManager.Login(loginReq.username, loginReq.password))
+            {
+                loginRes.status = 1;
+                res.response = Serializer.Serializer.SerializeResponse(loginRes);
+            }
+            else
+            {
+                res.response = Serializer.Serializer.SerializeResponse(new ErrorResponse("Login failed"));
+            }
 
-            return new RequestResult();
+            return res;
         }
         private RequestResult Signup(RequestInfo reqInfo)
         {

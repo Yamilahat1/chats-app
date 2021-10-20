@@ -20,7 +20,7 @@ namespace Managers
     }
     public class LoginManager
     {
-        private static List<User> m_loggedUsers = new List<User>();
+        private static Dictionary<string, User> m_loggedUsers = new Dictionary<string, User>();
 
         public static bool Signup(string username, string password)
         {
@@ -30,6 +30,19 @@ namespace Managers
                 return true;
             }
             return false;
+        }
+        public static bool Login(string username, string password)
+        {
+            if (SqliteDatabase.LoginUser(username, password))
+            {
+                m_loggedUsers.Add(username, new User(username, password));
+                return true;
+            }
+            return false;
+        }
+        public static bool IsOnline(string username)
+        {
+            return m_loggedUsers.ContainsKey(username);
         }
     }
 }

@@ -58,6 +58,8 @@ namespace Server
             {
                 while (true)
                 {
+                    headers = "";
+                    buffer.Clear();
                     headers = Recv(clientSocket, (int)Defines.LEN_END);
                     msgLen = Convert.ToInt32(headers.Substring((int)Defines.LEN_BEGIN, (int)Defines.LEN_END - (int)Defines.LEN_BEGIN));
                     if (msgLen > 0) data = Recv(clientSocket, msgLen);
@@ -71,6 +73,7 @@ namespace Server
                 }
             } catch(Exception)
             {
+                Console.WriteLine("SERVER ERROR");
                 // If client disconnects or something
                 clientSocket.Shutdown(SocketShutdown.Both);
                 clientSocket.Close();
