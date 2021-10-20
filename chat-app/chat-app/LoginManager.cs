@@ -40,9 +40,7 @@ namespace Managers
             }
             return false;
         }
-        public static bool IsOnline(string username)
-        {
-            return m_loggedUsers.ContainsKey(username);
-        }
+        public static bool IsOnline(string username) => m_loggedUsers.ContainsKey(username);
+        public static void Signout(string username) => m_loggedUsers.Remove(username);
     }
 }

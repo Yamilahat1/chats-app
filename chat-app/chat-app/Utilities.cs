@@ -54,7 +54,7 @@ namespace Utilities
     }
     public enum Codes
     {
-        LOGIN, SIGNUP, ERROR
+        LOGIN, SIGNUP, ERROR, SIGNOUT
     }
     public enum Defines
     {

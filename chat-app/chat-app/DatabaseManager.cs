@@ -108,7 +108,11 @@ namespace Server
             m_db.CommandText = string.Format("SELECT salt FROM tUser WHERE username='{0}';", username);
             SQLiteDataReader reader = m_db.ExecuteReader();
 
-            if (!reader.HasRows) throw new Exception("User not found");
+            if (!reader.HasRows)
+            {
+                reader.Close();
+                throw new Exception("User not found");
+            }
 
             reader.Read();
             salt = reader.GetValue(0).ToString();
