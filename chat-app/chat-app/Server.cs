@@ -64,7 +64,9 @@ namespace Server
                     reqInfo.id = (uint)headers[(int)Defines.MSG_CODE] - '0';
                     PushToBuffer(ref buffer, headers, data, msgLen);
                     reqInfo.buffer = buffer;
+
                     res = loginHandler.HandleRequest(reqInfo);
+
                     Send(clientSocket, string.Join("", res.response.ToArray()));
                 }
             } catch(Exception)
@@ -86,7 +88,6 @@ namespace Server
 
             int numByte = clientSocket.Receive(bytes);
             data += Encoding.ASCII.GetString(bytes, 0, numByte);
-            Console.WriteLine(data);
             return data;
         }
         private static void Send(Socket clientSocket, string msg)

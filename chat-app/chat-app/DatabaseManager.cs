@@ -18,7 +18,6 @@ namespace Server
             m_connection.Open();
 
             m_db = new SQLiteCommand(m_connection);
-            // if (File.Exists(LOCATION)) return;
             try
             {
                 CreateTables();

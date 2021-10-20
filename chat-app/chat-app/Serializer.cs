@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using Utilities;
+using XmlManagement;
 
 namespace Serializer
 {
     class Serializer
     {
-        private static List<char> SetToProtocol(string msg, int code)
+        private static List<char> AddHeaders(string msg, int code)
         {
             List<char> buff = new List<char>();
             string length = msg.Length.ToString();
@@ -18,10 +19,17 @@ namespace Serializer
             return buff;
 
         }
-
+        private static List<char> Serialize(string root, Dictionary<string, string> dict, Codes code)
+        {
+            return AddHeaders(XmlManagement.XmlManagement.Serialization(root, dict), (int)code);
+        }
         public static List<char> SerializeResponse(SignupResponse res)
         {
-            return SetToProtocol("{\"status\": " + res.status.ToString() + "}", 1);
+            return Serialize("Response", new Dictionary<string, string> { { "Status", res.status.ToString() } }, Codes.SIGNUP);
+        }
+        public static List<char> SerializeResponse(ErrorResponse res)
+        {
+            return Serialize("Error", new Dictionary<string, string> { { "Message", res.msg } }, Codes.ERROR);
         }
     }
 }

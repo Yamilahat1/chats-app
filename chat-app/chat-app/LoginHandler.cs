@@ -38,8 +38,7 @@ namespace Handlers
             }
             catch (Exception e)
             {
-                Console.WriteLine("error in login handler");
-                // handler.response = JsonResponsePacketSerializer::serializeResponse(ErrorResponse{ e });
+                handler.response = Serializer.Serializer.SerializeResponse(new ErrorResponse(e));
             }
             return handler;
         }
@@ -69,7 +68,7 @@ namespace Handlers
             }
             else
             {
-                // Todo: add error response in case user exists
+                res.response = Serializer.Serializer.SerializeResponse(new ErrorResponse("User already exists!"));
             }
             return res;
         }

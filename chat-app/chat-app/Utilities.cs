@@ -39,10 +39,22 @@ namespace Utilities
         public string username;
         public string password;
     }
+    public struct ErrorResponse
+    {
+        public string msg;
 
+        public ErrorResponse(string e) : this()
+        {
+            this.msg = e;
+        }
+        public ErrorResponse(Exception e) : this()
+        {
+            this.msg = e.Message;
+        }
+    }
     public enum Codes
     {
-        LOGIN, SIGNUP
+        LOGIN, SIGNUP, ERROR
     }
     public enum Defines
     {
