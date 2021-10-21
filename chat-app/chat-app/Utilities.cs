@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using Managers;
 
 namespace Utilities
 {
@@ -20,8 +21,7 @@ namespace Utilities
     }
     public struct LoadChatResponse
     {
-        public Dictionary<Message>
-
+        public List<Message> chatLog;
     }
     public struct RequestInfo
     {
@@ -71,7 +71,7 @@ namespace Utilities
     }
     public enum Codes
     {
-        LOGIN, SIGNUP, ERROR, SIGNOUT
+        ERROR, LOGIN, SIGNUP, SIGNOUT
     }
     public enum Defines
     {

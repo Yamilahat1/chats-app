@@ -85,9 +85,10 @@ namespace Server
 
                     Send(clientSocket, string.Join("", res.response.ToArray()));
                 }
-            } catch(Exception)
+            }
+            catch(Exception)
             {
-                Console.WriteLine($">> Goodbye {nick}");
+                Console.WriteLine($">> Here goes {nick}!");
                 m_names.Add(nick);
                 // If client disconnects or something
                 clientSocket.Shutdown(SocketShutdown.Both);

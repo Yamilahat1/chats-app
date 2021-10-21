@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Security.Cryptography;
@@ -13,7 +14,7 @@ namespace Server
         private static SQLiteConnection m_connection;
         public static void InitDatabase()
         {
-            string cs = @"URI=file:C:\test\test.db";
+            string cs = @"URI=file:D:\test.db";
             m_connection = new SQLiteConnection(cs);
             m_connection.Open();
 
@@ -139,6 +140,7 @@ namespace Server
         public static List<Message> LoadMessages(int roomID)
         {
             // CONTINUE
+            return new List<Message>();
         }
     }
 }

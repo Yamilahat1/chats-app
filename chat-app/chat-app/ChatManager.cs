@@ -6,7 +6,7 @@ using Server;
 
 namespace Managers
 {
-    struct Message
+    public struct Message
     {
         public int senderID;
         public int chatID;
@@ -20,7 +20,7 @@ namespace Managers
         }
         public static List<Message> LoadMessages(int chatID)
         {
-            
+            return new List<Message>();
         }
     }
 }

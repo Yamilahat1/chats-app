@@ -5,14 +5,74 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="368" Margin="277,26,0,25" Width="252"/>
-        <Label Content="Login" HorizontalAlignment="Center" Margin="347,26,332,334" FontFamily="Arial" FontWeight="Bold" FontSize="36" Width="113"/>
-        <Label Content="Username:" HorizontalAlignment="Center" Margin="287,193,412,197" FontFamily="Arial" FontWeight="Bold" FontSize="16" Width="93"/>
-        <Label Content="Password:" HorizontalAlignment="Center" Margin="287,227,412,163" FontFamily="Arial" FontWeight="Bold" FontSize="16" Width="93"/>
-        <TextBox x:Name="txtUsername" HorizontalAlignment="Left" Height="22" Margin="395,199,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="92"/>
-        <TextBox x:Name="txtPassword" HorizontalAlignment="Left" Height="22" Margin="395,233,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="92"/>
-        <Button x:Name="btnLogin" Content="Login" HorizontalAlignment="Left" Height="24" Margin="395,260,0,0" VerticalAlignment="Top" Width="92" Click="btnLogin_Click"/>
+        Title="MainWindow" Height="450" Width="800"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="#9CB2CE ">
+    <Grid Background="#CC9CB2CE">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Background="#FFFFFF"
+              Grid.ColumnSpan="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Rectangle x:Name="Top" Fill="#FFF4F4F5" Grid.Column="0" HorizontalAlignment="Left" Height="25" Stroke="Black" VerticalAlignment="Top" Width="800" Grid.ColumnSpan="16" MouseDown="Top_MouseDown" Margin="0,0,-266,0"/>
+            <TextBlock Text="Chat" Foreground="#29487D" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Mplus 1p"></TextBlock>
+        </Grid>
+
+        <Border Grid.Column="3" Grid.ColumnSpan="3" Grid.Row="2" Grid.RowSpan="6"
+                   CornerRadius="50, 50, 50, 0">
+            <Border.Background>
+                <SolidColorBrush Color="#D4D8E8"/>
+            </Border.Background>
+        </Border>
+        <TextBlock x:Name="title" Text="Login" Grid.Column="3" FontFamily="Mplus 1p" FontSize="36" Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontWeight="Bold"  Foreground="#29487D"/>
+        <Label Content="Username" Grid.Column="3" Grid.Row="4" Padding="15, 0, 0, 0" Foreground="#29487D" FontWeight="Bold"></Label>
+        <Label Content="Password" Grid.Column="3" Grid.Row="4" Padding="15, 0, 0, 0" Foreground="#29487D" VerticalContentAlignment="Bottom" FontWeight="Bold"></Label>
+        <Label x:Name="status" Content="Status" Grid.Column="4" Visibility="Hidden" Grid.Row="5" Foreground="Red" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" HorizontalAlignment="Stretch" FontWeight="Bold"></Label>
+        <TextBox x:Name="txtUsername" Text="Bob" Grid.Row="4" Background="White" Foreground = "#3C5898" FontFamily="Mplus 1p" Grid.Column="4" VerticalAlignment="Top" GotFocus="box_GotFocus"/>
+        <TextBox x:Name="txtPassword" Text="Bob" Grid.Row="4" Background="White" Foreground = "#3C5898"  FontFamily="Mplus 1p" Grid.Column="4" VerticalAlignment="Bottom" GotFocus="box_GotFocus"/>
+        <Button x:Name="btnLogin" Grid.Row="6" Grid.Column="4" FontFamily="Mplus 1p" Content="Login" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Click="btnLogin_Click" Grid.ColumnSpan="2" Margin="0.167,0,88.833,31"/>
+        <Button x:Name="btnSignup" Grid.Row="6" Grid.Column="4" FontFamily="Mplus 1p" Content="Signup" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="btnSignup_Click" Grid.ColumnSpan="2" Margin="0.167,31,88.833,0"/>
+        <Ellipse Grid.Column="8" Fill="#AF0606 " HorizontalAlignment="Left" Height="18" Margin="66.167,4,0,0" Stroke="Black" VerticalAlignment="Top" Width="18" MouseUp="Quit_Click" />
+
     </Grid>
 </Window>

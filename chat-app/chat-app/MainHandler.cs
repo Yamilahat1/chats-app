@@ -61,7 +61,7 @@ namespace Handlers
         }
         private RequestResult SendMessage(RequestInfo reqInfo)
         {
-
+            return new RequestResult();
         }
     }
 }
