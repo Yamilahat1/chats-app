@@ -59,11 +59,9 @@ namespace Server
         }
         private static void HandleClient(Socket clientSocket, string nick)
         {
-            LoginHandler loginHandler = new LoginHandler();
-            RequestResult handler;
+            IHandler handler = new LoginHandler();
             RequestInfo reqInfo;
             RequestResult res;
-            handler.newHandler = null;
             string data = "";
             string headers;
             int msgLen;
@@ -81,7 +79,9 @@ namespace Server
                     PushToBuffer(ref buffer, headers, data, msgLen);
                     reqInfo.buffer = buffer;
 
-                    res = loginHandler.HandleRequest(reqInfo);
+                    if (!handler.Validation(reqInfo)) continue;
+                    res = handler.HandleRequest(reqInfo);
+                    if (res.newHandler != null) handler = res.newHandler;
 
                     Send(clientSocket, string.Join("", res.response.ToArray()));
                 }

@@ -25,7 +25,11 @@ namespace Serializer
         }
         public static List<char> SerializeResponse(SignupResponse res)
         {
-            return Serialize("Response", new Dictionary<string, string> { { "Status", res.status.ToString() } }, Codes.SIGNUP);
+            return Serialize("SignupResponse", new Dictionary<string, string> { { "Status", res.status.ToString() } }, Codes.SIGNUP);
+        }
+        public static List<char> SerializeResponse(SignoutResponse res)
+        {
+            return Serialize("SignoutResponse", new Dictionary<string, string> { { "Status", res.status.ToString() } }, Codes.SIGNOUT);
         }
         public static List<char> SerializeResponse(ErrorResponse res)
         {

@@ -35,5 +35,12 @@ namespace Deserializer
             obj.password = parsed["Password"];
             return obj;
         }
+        public static SignoutRequest deserializeSignoutRequest(List<char> buff)
+        {
+            SignoutRequest obj;
+            var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
+            obj.username = parsed["Username"];
+            return obj;
+        }
     }
 }

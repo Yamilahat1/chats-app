@@ -54,6 +54,7 @@ namespace Handlers
             {
                 loginRes.status = 1;
                 res.response = Serializer.Serializer.SerializeResponse(loginRes);
+                res.newHandler = new MainHandler();
             }
             else
             {

@@ -6,6 +6,14 @@ using System.Xml.Serialization;
 
 namespace Utilities
 {
+    public struct SignoutRequest
+    {
+        public string username;
+    }
+    public struct SignoutResponse
+    {
+        public uint status;
+    }
     public struct RequestInfo
     {
         public uint id;

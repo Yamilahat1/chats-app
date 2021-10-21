@@ -10,10 +10,9 @@ namespace Server
     {
         private static SQLiteCommand m_db;
         private static SQLiteConnection m_connection;
-        private const string LOCATION = "D:\\test.db";
         public static void InitDatabase()
         {
-            string cs = @"URI=file:D:\test.db";
+            string cs = @"URI=file:C:\test\test.db";
             m_connection = new SQLiteConnection(cs);
             m_connection.Open();
 
