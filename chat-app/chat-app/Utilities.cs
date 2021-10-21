@@ -14,6 +14,15 @@ namespace Utilities
     {
         public uint status;
     }
+    public struct LoadChatRequest
+    {
+        public string chatName;
+    }
+    public struct LoadChatResponse
+    {
+        public Dictionary<Message>
+
+    }
     public struct RequestInfo
     {
         public uint id;

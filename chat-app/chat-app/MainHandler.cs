@@ -59,5 +59,9 @@ namespace Handlers
 
             return res;
         }
+        private RequestResult SendMessage(RequestInfo reqInfo)
+        {
+
+        }
     }
 }

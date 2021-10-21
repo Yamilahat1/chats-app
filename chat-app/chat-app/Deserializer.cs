@@ -42,5 +42,6 @@ namespace Deserializer
             obj.username = parsed["Username"];
             return obj;
         }
+        
     }
 }

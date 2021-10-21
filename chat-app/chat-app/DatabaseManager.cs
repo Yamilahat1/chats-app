@@ -3,6 +3,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Managers;
 // Todo: add mutex
 namespace Server
 {
@@ -130,6 +131,14 @@ namespace Server
             match = reader.GetValue(0).ToString().Equals(hashedPassword);
             reader.Close();
             return match;
+        }
+        public static void SendMessage(int roomID, int senderID, string msgContent)
+        {
+            Execute(string.Format("INSERT INTO tMessage(roomID, userID, message) VALUES ({0}, {1}, {2});", roomID.ToString(), senderID.ToString(), msgContent));
+        }
+        public static List<Message> LoadMessages(int roomID)
+        {
+            // CONTINUE
         }
     }
 }

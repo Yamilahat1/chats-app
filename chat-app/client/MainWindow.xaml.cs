@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xaml;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Text.RegularExpressions;
 
 namespace client
 {
@@ -30,7 +32,7 @@ namespace client
         {
             string username = txtUsername.Text;
             string password = txtPassword.Text;
-            // Todo: check input
+            
             Communicator.Send("LoginRequest", new Dictionary<string, string> { { "Username", username }, { "Password", password } }, Code.Login);
             var res = Communicator.Recv();
             foreach (KeyValuePair<string, string> kv in res)
