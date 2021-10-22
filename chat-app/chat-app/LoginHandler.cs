@@ -48,11 +48,12 @@ namespace Handlers
             LoginResponse loginRes;
             LoginRequest loginReq;
             res.newHandler = null;
-            loginReq = Deserializer.Deserializer.deserializeLoginRequest(reqInfo.buffer);
-
-            if (!LoginManager.IsOnline(loginReq.username) && LoginManager.Login(loginReq.username, loginReq.password))
+            loginReq = Deserializer.Deserializer.DeserializeLoginRequest(reqInfo.buffer);
+            int id = LoginManager.Login(loginReq.username, loginReq.password);
+            if (id != -1)
             {
                 loginRes.status = 1;
+                loginRes.id = id;
                 res.response = Serializer.Serializer.SerializeResponse(loginRes);
                 res.newHandler = new MainHandler();
             }
@@ -60,7 +61,6 @@ namespace Handlers
             {
                 res.response = Serializer.Serializer.SerializeResponse(new ErrorResponse("Login failed"));
             }
-
             return res;
         }
         private RequestResult Signup(RequestInfo reqInfo)
@@ -69,7 +69,7 @@ namespace Handlers
             SignupResponse signupRes;
             SignupRequest signupReq;
             res.newHandler = null;
-            signupReq = Deserializer.Deserializer.deserializeSignupRequest(reqInfo.buffer);
+            signupReq = Deserializer.Deserializer.DeserializeSignupRequest(reqInfo.buffer);
             if (LoginManager.Signup(signupReq.username, signupReq.password))
             {
                 signupRes.status = 1;

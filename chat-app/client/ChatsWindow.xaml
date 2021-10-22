@@ -8,5 +8,6 @@
         Title="ChatsWindow" Height="450" Width="800">
     <Grid>
         <Ellipse Grid.Column="8" Fill="#AF0606 " HorizontalAlignment="Left" Height="18" Margin="66.167,4,0,0" Stroke="Black" VerticalAlignment="Top" Width="18" MouseUp="Quit_Click" />
+        <Button x:Name="btnLoadChat" Content="Load Chat" HorizontalAlignment="Left" Height="96" Margin="185,133,0,0" VerticalAlignment="Top" Width="291" Click="btnLoadChat_Click"/>
     </Grid>
 </Window>

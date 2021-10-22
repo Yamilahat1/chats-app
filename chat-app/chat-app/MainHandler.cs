@@ -16,7 +16,7 @@ namespace Handlers
         }
         public override bool Validation(RequestInfo req)
         {
-            return req.id == (uint)Codes.SIGNOUT;
+            return req.id == (uint)Codes.SIGNOUT || req.id == (uint)Codes.LOAD_CHAT || req.id == (uint)Codes.GET_ALL_CHATS;
         }
         public override RequestResult HandleRequest(RequestInfo req)
         {
@@ -29,6 +29,12 @@ namespace Handlers
                 {
                     case (uint)Codes.SIGNOUT:
                         return Signout(req);
+
+                    case (uint)Codes.LOAD_CHAT:
+                        return LoadChat(req);
+
+                    case (uint)Codes.GET_ALL_CHATS:
+                        return GetAllChats(req);
                 }
             }
             catch(Exception e)
@@ -43,13 +49,12 @@ namespace Handlers
             SignoutResponse signoutRes;
             SignoutRequest signoutReq;
             res.newHandler = null;
-            signoutReq = Deserializer.Deserializer.deserializeSignoutRequest(reqInfo.buffer);
+            signoutReq = Deserializer.Deserializer.DeserializeSignoutRequest(reqInfo.buffer);
 
-            if (LoginManager.IsOnline(signoutReq.username))
-            {
-                signoutRes.status = 1;
-                res.response = Serializer.Serializer.SerializeResponse(signoutRes);
-                LoginManager.Signout(signoutReq.username);
+            signoutRes.status = 1;
+            res.response = Serializer.Serializer.SerializeResponse(signoutRes);
+            if (LoginManager.Signout(signoutReq.username))
+            { 
                 res.newHandler = new LoginHandler();
             }
             else
@@ -62,6 +67,21 @@ namespace Handlers
         private RequestResult SendMessage(RequestInfo reqInfo)
         {
             return new RequestResult();
+        }
+        private RequestResult LoadChat(RequestInfo reqInfo)
+        {
+            RequestResult res = new RequestResult();
+            LoadChatResponse loadChatRes;
+            LoadChatRequest loadChatReq;
+            res.newHandler = null;
+            loadChatReq = Deserializer.Deserializer.DeserializeLoadChatRequest(reqInfo.buffer);
+            loadChatRes.chatLog = ChatManager.LoadMessages(loadChatReq.chatID);
+            res.response = Serializer.Serializer.SerializeResponse(loadChatRes);
+            return res;
+        }
+        private RequestResult GetAllChats(RequestInfo reqInfo)
+        {
+
         }
     }
 }

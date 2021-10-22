@@ -31,16 +31,24 @@ namespace Managers
             }
             return false;
         }
-        public static bool Login(string username, string password)
+        public static int Login(string username, string password)
         {
-            if (SqliteDatabase.LoginUser(username, password))
+            if (IsOnline(username)) return -1;
+            var res = SqliteDatabase.LoginUser(username, password);
+            int id = -1;
+            if (res[0] == 1)
             {
                 m_loggedUsers.Add(username, new User(username, password));
-                return true;
+                id = res[1];
             }
-            return false;
+            return id;
         }
-        public static bool IsOnline(string username) => m_loggedUsers.ContainsKey(username);
-        public static void Signout(string username) => m_loggedUsers.Remove(username);
+        private static bool IsOnline(string username) => m_loggedUsers.ContainsKey(username);
+        public static bool Signout(string username)
+        {
+            if (IsOnline(username)) m_loggedUsers.Remove(username);
+            else return false;
+            return true;
+        }
     }
 }

@@ -22,10 +22,12 @@ namespace client
     public partial class ChatsWindow : Window
     {
         private string m_username;
-        public ChatsWindow(Window caller, string username)
+        private int m_id;
+        public ChatsWindow(Window caller, string username, int id)
         {
             caller.Close();
             m_username = username;
+            m_id = id;
             InitializeComponent();
         }
         private void Quit_Click(object sender, RoutedEventArgs e)
@@ -36,6 +38,11 @@ namespace client
             Communicator.Send("SignoutRequest", new Dictionary<string, string> { { "Username", m_username } }, Code.Signout);
             Communicator.Recv();
             this.Close();
+        }
+        private void btnLoadChat_Click(object sender, RoutedEventArgs e)
+        {
+            Communicator.Send("LoadChat", new Dictionary<string, string> { { "ChatID", 2.ToString() } }, Code.LoadChat);
+            var msgs = Communicator.Recv();
         }
     }
 }

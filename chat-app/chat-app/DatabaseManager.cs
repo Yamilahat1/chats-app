@@ -71,7 +71,6 @@ namespace Server
         }
         public static bool DoesUserExist(string username)
         {
-            // m_db.CommandText = string.Format("SELECT * FROM tUser WHERE username = {0}", username);
             m_db.CommandText = string.Format("SELECT username FROM tUser");
 
             SQLiteDataReader reader = m_db.ExecuteReader();
@@ -120,18 +119,20 @@ namespace Server
             reader.Close();
             return salt;
         }
-        public static bool LoginUser(string username, string password)
+        public static List<int> LoginUser(string username, string password)
         { 
             string hashedPassword = HashString(password, GetUserSalt(username));
             bool match = false;
-            m_db.CommandText = string.Format("SELECT password FROM tUser WHERE username='{0}';", username);
+            List<int> res = new List<int>();
+            m_db.CommandText = string.Format("SELECT password, id FROM tUser WHERE username='{0}';", username);
             SQLiteDataReader reader = m_db.ExecuteReader();
             if (!reader.HasRows) throw new Exception("User not found");
 
             reader.Read();
-            match = reader.GetValue(0).ToString().Equals(hashedPassword);
+            res.Add(Convert.ToInt32(reader.GetValue(0).ToString().Equals(hashedPassword)));
+            if (res[0] == 1) res.Add(Convert.ToInt32(reader.GetValue(1).ToString()));
             reader.Close();
-            return match;
+            return res;
         }
         public static void SendMessage(int roomID, int senderID, string msgContent)
         {
@@ -139,8 +140,24 @@ namespace Server
         }
         public static List<Message> LoadMessages(int roomID)
         {
-            // CONTINUE
-            return new List<Message>();
+            List<Message> messages = new List<Message>();
+            m_db.CommandText = string.Format("SELECT userID, message FROM tMessage WHERE roomID={0} LIMIT 20", roomID);
+            SQLiteDataReader reader = m_db.ExecuteReader();
+            while (reader.Read())
+            {
+                messages.Add(new Message(int.Parse(reader.GetValue(0).ToString()), roomID, reader.GetValue(1).ToString()));
+            }
+            reader.Close();
+            return messages;
+        }
+        public static string GetNickname(int id)
+        {
+            m_db.CommandText = string.Format("SELECT nickname FROM tUser WHERE id={0}", id);
+            SQLiteDataReader reader = m_db.ExecuteReader();
+            reader.Read();
+            string nick = reader.GetValue(0).ToString();
+            reader.Close();
+            return nick;
         }
     }
 }

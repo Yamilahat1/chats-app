@@ -11,6 +11,12 @@ namespace Managers
         public int senderID;
         public int chatID;
         public string content;
+        public Message(int sender, int chat, string content)
+        {
+            senderID = sender;
+            chatID = chat;
+            this.content = content;
+        }
     }
     class ChatManager
     {
@@ -20,7 +26,7 @@ namespace Managers
         }
         public static List<Message> LoadMessages(int chatID)
         {
-            return new List<Message>();
+            return SqliteDatabase.LoadMessages(chatID);
         }
     }
 }

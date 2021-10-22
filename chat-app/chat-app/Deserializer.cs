@@ -19,7 +19,7 @@ namespace Deserializer
 
     public class Deserializer
     {
-        public static LoginRequest deserializeLoginRequest(List<char> buff)
+        public static LoginRequest DeserializeLoginRequest(List<char> buff)
         {
             LoginRequest obj;
             Dictionary<string, string> parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
@@ -27,7 +27,7 @@ namespace Deserializer
             obj.password = parsed["Password"];
             return obj;
         }
-        public static SignupRequest deserializeSignupRequest(List<char> buff)
+        public static SignupRequest DeserializeSignupRequest(List<char> buff)
         {
             SignupRequest obj;
             var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
@@ -35,13 +35,19 @@ namespace Deserializer
             obj.password = parsed["Password"];
             return obj;
         }
-        public static SignoutRequest deserializeSignoutRequest(List<char> buff)
+        public static SignoutRequest DeserializeSignoutRequest(List<char> buff)
         {
             SignoutRequest obj;
             var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
             obj.username = parsed["Username"];
             return obj;
         }
-        
+        public static LoadChatRequest DeserializeLoadChatRequest(List<char> buff)
+        {
+            LoadChatRequest obj;
+            var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
+            obj.chatID = int.Parse(parsed["ChatID"]);
+            return obj;
+        }        
     }
 }

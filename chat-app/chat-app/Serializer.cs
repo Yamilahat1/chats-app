@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Utilities;
 using XmlManagement;
+using Server;
 
 namespace Serializer
 {
@@ -37,7 +38,13 @@ namespace Serializer
         }
         public static List<char> SerializeResponse(LoginResponse res)
         {
-            return Serialize("Login", new Dictionary<string, string> { { "Status", res.status.ToString() } }, Codes.LOGIN);
+            return Serialize("Login", new Dictionary<string, string> { { "Status", res.status.ToString() }, {"id", res.id.ToString() } }, Codes.LOGIN);
+        }
+        public static List<char> SerializeResponse(LoadChatResponse res)
+        {
+            Dictionary<string, string> messages = new Dictionary<string, string> { };
+            foreach(var msg in res.chatLog) messages.Add(SqliteDatabase.GetNickname(msg.senderID), msg.content);
+            return Serialize("Messages", messages, Codes.LOAD_CHAT);
         }
     }
 }

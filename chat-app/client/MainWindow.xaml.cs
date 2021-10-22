@@ -46,7 +46,7 @@ namespace client
             }
             else
             {
-                ChatsWindow win = new ChatsWindow(this, username);
+                ChatsWindow win = new ChatsWindow(this, username, Convert.ToInt32(res["id"]));
                 win.ShowDialog();
             }
         }

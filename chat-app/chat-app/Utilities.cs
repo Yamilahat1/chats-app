@@ -17,7 +17,7 @@ namespace Utilities
     }
     public struct LoadChatRequest
     {
-        public string chatName;
+        public int chatID;
     }
     public struct LoadChatResponse
     {
@@ -38,6 +38,7 @@ namespace Utilities
     public struct LoginResponse
     {
         public uint status;
+        public int id;
     }
 
     public struct SignupResponse
@@ -71,7 +72,7 @@ namespace Utilities
     }
     public enum Codes
     {
-        ERROR, LOGIN, SIGNUP, SIGNOUT
+        ERROR, LOGIN, SIGNUP, SIGNOUT, LOAD_CHAT, GET_ALL_CHATS
     }
     public enum Defines
     {
