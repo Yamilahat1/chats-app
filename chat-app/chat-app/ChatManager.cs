@@ -18,6 +18,16 @@ namespace Managers
             this.content = content;
         }
     }
+    public struct MinimizedChat
+    {
+        public string chatName;
+        public string lastMessage;
+        public MinimizedChat(string name, string msg)
+        {
+            chatName = name;
+            lastMessage = msg;
+        }
+    }
     class ChatManager
     {
         public static void SendMessage(Message msg)

@@ -159,5 +159,10 @@ namespace Server
             reader.Close();
             return nick;
         }
+        public static List<MinimizedChat> GetAllChats(int userID)
+        {
+            // CONTINUE
+            // Get name from table tChat where id matches all roomID's of given userID from table tParticipants
+        }
     }
 }
