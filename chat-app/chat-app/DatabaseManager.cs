@@ -14,7 +14,7 @@ namespace Server
         private static SQLiteConnection m_connection;
         public static void InitDatabase()
         {
-            string cs = @"URI=file:D:\test.db";
+            string cs = @"URI=file:C:\test\test.db";
             m_connection = new SQLiteConnection(cs);
             m_connection.Open();
 
@@ -136,7 +136,7 @@ namespace Server
         }
         public static void SendMessage(int roomID, int senderID, string msgContent)
         {
-            Execute(string.Format("INSERT INTO tMessage(roomID, userID, message) VALUES ({0}, {1}, {2});", roomID.ToString(), senderID.ToString(), msgContent));
+            Execute(string.Format("INSERT INTO tMessage(roomID, userID, message) VALUES ({0}, {1}, \"{2}\");", roomID.ToString(), senderID.ToString(), msgContent));
         }
         public static List<Message> LoadMessages(int roomID)
         {
@@ -159,10 +159,17 @@ namespace Server
             reader.Close();
             return nick;
         }
-        public static List<MinimizedChat> GetAllChats(int userID)
+        public static Dictionary<string, string> GetAllChats(int userID)
         {
-            // CONTINUE
-            // Get name from table tChat where id matches all roomID's of given userID from table tParticipants
+            m_db.CommandText = string.Format("SELECT name, id FROM tChat WHERE id IN (SELECT roomID FROM tParticipants WHERE userID={0});", userID);
+            SQLiteDataReader reader = m_db.ExecuteReader();
+            Dictionary<string, string> chats = new Dictionary<string, string>();
+            while(reader.Read())
+            {
+                chats.Add(reader.GetValue(0).ToString(), reader.GetValue(1).ToString());
+            }
+            reader.Close();
+            return chats;
         }
     }
 }

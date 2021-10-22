@@ -18,25 +18,13 @@ namespace Managers
             this.content = content;
         }
     }
-    public struct MinimizedChat
-    {
-        public string chatName;
-        public string lastMessage;
-        public MinimizedChat(string name, string msg)
-        {
-            chatName = name;
-            lastMessage = msg;
-        }
-    }
     class ChatManager
     {
         public static void SendMessage(Message msg)
         {
             SqliteDatabase.SendMessage(msg.chatID, msg.senderID, msg.content);
         }
-        public static List<Message> LoadMessages(int chatID)
-        {
-            return SqliteDatabase.LoadMessages(chatID);
-        }
+        public static List<Message> LoadMessages(int chatID) => SqliteDatabase.LoadMessages(chatID);
+        public static Dictionary<string, string> GetAllChats(int userID) => SqliteDatabase.GetAllChats(userID);
     }
 }

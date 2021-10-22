@@ -11,7 +11,7 @@ namespace client
 {
     enum Code
     {
-        Login = 1, Signup, Signout, LoadChat
+        Login = 1, Signup, Signout, LoadChat, GetAllChats
     }
 
     internal class Communicator

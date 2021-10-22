@@ -46,5 +46,14 @@ namespace Serializer
             foreach(var msg in res.chatLog) messages.Add(SqliteDatabase.GetNickname(msg.senderID), msg.content);
             return Serialize("Messages", messages, Codes.LOAD_CHAT);
         }
+        public static List<char> SerializeResponse(GetAllChatsResponse res)
+        {
+            string chats = "";
+            foreach(var chat in res.chats)
+            {
+                chats += chat.Key + "-" + chat.Value + ",";
+            }
+            return Serialize("Chats", new Dictionary<string, string> { { "Chats", chats } }, Codes.GET_ALL_CHATS);
+        }
     }
 }

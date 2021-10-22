@@ -81,7 +81,14 @@ namespace Handlers
         }
         private RequestResult GetAllChats(RequestInfo reqInfo)
         {
-
+            RequestResult res = new RequestResult();
+            GetAllChatsResponse allChatsRes;
+            GetAllChatsRequest allChatsReq;
+            res.newHandler = null;
+            allChatsReq = Deserializer.Deserializer.DeserializeGetAllChatsRequest(reqInfo.buffer);
+            allChatsRes.chats = ChatManager.GetAllChats(allChatsReq.userID);
+            res.response = Serializer.Serializer.SerializeResponse(allChatsRes);
+            return res;
         }
     }
 }

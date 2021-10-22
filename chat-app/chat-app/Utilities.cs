@@ -23,6 +23,14 @@ namespace Utilities
     {
         public List<Message> chatLog;
     }
+    public struct GetAllChatsRequest
+    {
+        public int userID;
+    }
+    public struct GetAllChatsResponse
+    {
+        public Dictionary<string, string> chats;
+    }
     public struct RequestInfo
     {
         public uint id;
@@ -72,7 +80,7 @@ namespace Utilities
     }
     public enum Codes
     {
-        ERROR, LOGIN, SIGNUP, SIGNOUT, LOAD_CHAT, GET_ALL_CHATS
+        ERROR, LOGIN, SIGNUP, SIGNOUT, LOAD_CHAT, GET_ALL_CHATS, 
     }
     public enum Defines
     {

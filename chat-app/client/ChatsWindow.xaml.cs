@@ -21,6 +21,7 @@ namespace client
     /// </summary>
     public partial class ChatsWindow : Window
     {
+        private Dictionary<string, int> m_chats; // name-id
         private string m_username;
         private int m_id;
         public ChatsWindow(Window caller, string username, int id)
@@ -28,6 +29,8 @@ namespace client
             caller.Close();
             m_username = username;
             m_id = id;
+            SetupChatsDict();
+
             InitializeComponent();
         }
         private void Quit_Click(object sender, RoutedEventArgs e)
@@ -43,6 +46,13 @@ namespace client
         {
             Communicator.Send("LoadChat", new Dictionary<string, string> { { "ChatID", 2.ToString() } }, Code.LoadChat);
             var msgs = Communicator.Recv();
+        }
+        private void SetupChatsDict()
+        {
+            Communicator.Send("GetAllChats", new Dictionary<string, string> { { "UserID", m_id.ToString() } }, Code.GetAllChats);
+            string[] res = Communicator.Recv()["Chats"].Split(',');
+            res = res.Take(res.Length - 1).ToArray();
+            foreach (var chat in res) m_chats.Add(chat.Split('-')[0], Convert.ToInt32(chat.Split('-')[1]));
         }
     }
 }
