@@ -4,6 +4,8 @@ using System.Text;
 using Utilities;
 using XmlManagement;
 using Server;
+using System.Xml;
+using System.IO;
 
 namespace Serializer
 {
@@ -42,9 +44,7 @@ namespace Serializer
         }
         public static List<char> SerializeResponse(LoadChatResponse res)
         {
-            Dictionary<string, string> messages = new Dictionary<string, string> { };
-            foreach(var msg in res.chatLog) messages.Add(SqliteDatabase.GetNickname(msg.senderID), msg.content);
-            return Serialize("Messages", messages, Codes.LOAD_CHAT);
+            return Serialize("Messages", res.msg, Codes.LOAD_CHAT);
         }
         public static List<char> SerializeResponse(GetAllChatsResponse res)
         {

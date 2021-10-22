@@ -47,6 +47,7 @@ namespace Deserializer
             LoadChatRequest obj;
             var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
             obj.chatID = int.Parse(parsed["ChatID"]);
+            obj.offset = int.Parse(parsed["Offset"]);
             return obj;
         }
         public static GetAllChatsRequest DeserializeGetAllChatsRequest(List<char> buff)

@@ -75,8 +75,9 @@ namespace Handlers
             LoadChatRequest loadChatReq;
             res.newHandler = null;
             loadChatReq = Deserializer.Deserializer.DeserializeLoadChatRequest(reqInfo.buffer);
-            loadChatRes.chatLog = ChatManager.LoadMessages(loadChatReq.chatID);
+            loadChatRes.msg = ChatManager.LoadMessage(loadChatReq.chatID, loadChatReq.offset);
             res.response = Serializer.Serializer.SerializeResponse(loadChatRes);
+            Console.WriteLine(string.Join("", res.response.ToArray()));
             return res;
         }
         private RequestResult GetAllChats(RequestInfo reqInfo)

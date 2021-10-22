@@ -24,7 +24,7 @@ namespace Managers
         {
             SqliteDatabase.SendMessage(msg.chatID, msg.senderID, msg.content);
         }
-        public static List<Message> LoadMessages(int chatID) => SqliteDatabase.LoadMessages(chatID);
+        public static Dictionary<string, string> LoadMessage(int chatID, int offset) => SqliteDatabase.LoadMessage(chatID, offset);
         public static Dictionary<string, string> GetAllChats(int userID) => SqliteDatabase.GetAllChats(userID);
     }
 }

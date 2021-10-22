@@ -18,10 +18,11 @@ namespace Utilities
     public struct LoadChatRequest
     {
         public int chatID;
+        public int offset;
     }
     public struct LoadChatResponse
     {
-        public List<Message> chatLog;
+        public Dictionary<string, string> msg; // sender/content
     }
     public struct GetAllChatsRequest
     {

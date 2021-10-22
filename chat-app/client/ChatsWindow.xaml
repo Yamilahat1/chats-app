@@ -5,10 +5,49 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:client"
         mc:Ignorable="d"
-        Title="ChatsWindow" Height="450" Width="800">
+        Title="ChatsWindow" Height="450" Width="800"
+        WindowStyle="None">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style TargetType="ListViewItem" x:Key="ChatCard">
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="LightCyan"/>
+                    </Trigger>
+                </Style.Triggers>
+
+                <Setter Property="Background" Value="LightBlue"/>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListViewItem">
+                            <Border Background="{TemplateBinding Background}"
+                                    Height="50"
+                                    CornerRadius="4"
+                                    Margin="8,2,8,2">
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="10,0,0,0">
+                                    <StackPanel>
+                                        <Label Content="{Binding Name}"
+                                            Foreground="Black"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+
     <Grid>
-        <Ellipse Grid.Column="8" Fill="#AF0606 " HorizontalAlignment="Left" Height="18" Margin="66.167,4,0,0" Stroke="Black" VerticalAlignment="Top" Width="18" MouseUp="Quit_Click" />
-        <Button x:Name="btnLoadChat" Content="Load Chat" HorizontalAlignment="Left" Height="96" Margin="185,133,0,0" VerticalAlignment="Top" Width="291" Click="btnLoadChat_Click"/>
-        <Button x:Name="btnGetAllChats" Content="Load Chat" HorizontalAlignment="Left" Height="96" Margin="10,133,0,0" VerticalAlignment="Top" Width="291" Click="btnGetAllChats_Click"/>
+        <Ellipse Fill="#AF0606 " HorizontalAlignment="Left" Height="18" Margin="764,10,0,0" Stroke="Black" VerticalAlignment="Top" Width="18" MouseUp="Quit_Click" />
+        
+        <ListBox x:Name="lstMessages" HorizontalAlignment="Left" Height="399" Margin="182,33,0,0" VerticalAlignment="Top" Width="583"/>
+
+        <ListView x:Name="lstChats" HorizontalAlignment="Left" Height="399" Margin="10,33,0,0" VerticalAlignment="Top" Width="167" ItemsSource="{Binding Name}" ItemContainerStyle="{StaticResource ChatCard}" SelectionChanged="lstChats_SelectionChanged"/>
+
     </Grid>
 </Window>

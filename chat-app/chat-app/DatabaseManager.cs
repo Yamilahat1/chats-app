@@ -14,7 +14,7 @@ namespace Server
         private static SQLiteConnection m_connection;
         public static void InitDatabase()
         {
-            string cs = @"URI=file:C:\test\test.db";
+            string cs = @"URI=file:ChatsApp.db";
             m_connection = new SQLiteConnection(cs);
             m_connection.Open();
 
@@ -74,7 +74,7 @@ namespace Server
             m_db.CommandText = string.Format("SELECT username FROM tUser");
 
             SQLiteDataReader reader = m_db.ExecuteReader();
-            while(reader.Read())
+            while (reader.Read())
             {
                 for (int i = 0; i < reader.FieldCount; i++)
                     if (reader.GetValue(i).ToString().Equals(username))
@@ -122,7 +122,6 @@ namespace Server
         public static List<int> LoginUser(string username, string password)
         { 
             string hashedPassword = HashString(password, GetUserSalt(username));
-            bool match = false;
             List<int> res = new List<int>();
             m_db.CommandText = string.Format("SELECT password, id FROM tUser WHERE username='{0}';", username);
             SQLiteDataReader reader = m_db.ExecuteReader();
@@ -138,17 +137,26 @@ namespace Server
         {
             Execute(string.Format("INSERT INTO tMessage(roomID, userID, message) VALUES ({0}, {1}, \"{2}\");", roomID.ToString(), senderID.ToString(), msgContent));
         }
-        public static List<Message> LoadMessages(int roomID)
+        public static Dictionary<string, string> LoadMessage(int roomID, int offset = 0)
         {
-            List<Message> messages = new List<Message>();
-            m_db.CommandText = string.Format("SELECT userID, message FROM tMessage WHERE roomID={0} LIMIT 20", roomID);
+            var msg = new Dictionary<string, string> { };
+            m_db.CommandText = string.Format("SELECT userID, message, id FROM tMessage WHERE roomID={0} LIMIT 1 OFFSET {1}", roomID, offset);
             SQLiteDataReader reader = m_db.ExecuteReader();
-            while (reader.Read())
+            reader.Read();
+            if (!reader.HasRows)
             {
-                messages.Add(new Message(int.Parse(reader.GetValue(0).ToString()), roomID, reader.GetValue(1).ToString()));
+                reader.Close();
+                return new Dictionary<string, string> { };
             }
+            int userID = Convert.ToInt32(reader.GetValue(0).ToString());
+            string content = reader.GetValue(1).ToString();
+            string msgID = reader.GetValue(2).ToString();
             reader.Close();
-            return messages;
+
+            msg.Add("Sender", GetNickname(userID));
+            msg.Add("Content", content);
+            msg.Add("MessageID", msgID);
+            return msg;
         }
         public static string GetNickname(int id)
         {
