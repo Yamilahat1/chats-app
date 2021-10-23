@@ -55,5 +55,9 @@ namespace Serializer
             }
             return Serialize("Chats", new Dictionary<string, string> { { "Chats", chats } }, Codes.GET_ALL_CHATS);
         }
+        public static List<char> SerializeResponse(SendMessageResponse res)
+        {
+            return Serialize("SendMessage", new Dictionary<string, string> { { "Status", res.status.ToString() } }, Codes.SEND_MESSAGE);
+        }
     }
 }

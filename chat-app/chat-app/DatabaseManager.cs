@@ -133,9 +133,14 @@ namespace Server
             reader.Close();
             return res;
         }
-        public static void SendMessage(int roomID, int senderID, string msgContent)
+        public static int SendMessage(int roomID, int senderID, string msgContent)
         {
-            Execute(string.Format("INSERT INTO tMessage(roomID, userID, message) VALUES ({0}, {1}, \"{2}\");", roomID.ToString(), senderID.ToString(), msgContent));
+            try
+            {
+                Execute(string.Format("INSERT INTO tMessage(roomID, userID, message) VALUES ({0}, {1}, \"{2}\");", roomID.ToString(), senderID.ToString(), msgContent));
+            }
+            catch { return 0; }
+            return 1;
         }
         public static Dictionary<string, string> LoadMessage(int roomID, int offset = 0)
         {

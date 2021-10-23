@@ -20,9 +20,9 @@ namespace Managers
     }
     class ChatManager
     {
-        public static void SendMessage(Message msg)
+        public static int SendMessage(Message msg)
         {
-            SqliteDatabase.SendMessage(msg.chatID, msg.senderID, msg.content);
+            return SqliteDatabase.SendMessage(msg.chatID, msg.senderID, msg.content);
         }
         public static Dictionary<string, string> LoadMessage(int chatID, int offset) => SqliteDatabase.LoadMessage(chatID, offset);
         public static Dictionary<string, string> GetAllChats(int userID) => SqliteDatabase.GetAllChats(userID);

@@ -43,7 +43,6 @@ namespace client
             {
                 status.Content = "Login failed.";
                 status.Visibility = Visibility.Visible;
-                MessageBox.Show(res["Message"]);
             }
             else
             {

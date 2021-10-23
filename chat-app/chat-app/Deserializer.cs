@@ -57,5 +57,14 @@ namespace Deserializer
             obj.userID = int.Parse(parsed["UserID"]);
             return obj;
         }
+        public static SendMessageRequest DeserializeSendMessageRequest(List<char> buff)
+        {
+            SendMessageRequest obj;
+            var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
+            obj.userID = int.Parse(parsed["UserID"]);
+            obj.chatID = int.Parse(parsed["ChatID"]);
+            obj.content = parsed["Content"];
+            return obj;
+        }
     }
 }

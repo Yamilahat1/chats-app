@@ -16,7 +16,7 @@ namespace Handlers
         }
         public override bool Validation(RequestInfo req)
         {
-            return req.id == (uint)Codes.SIGNOUT || req.id == (uint)Codes.LOAD_CHAT || req.id == (uint)Codes.GET_ALL_CHATS;
+            return req.id == (uint)Codes.SIGNOUT || req.id == (uint)Codes.LOAD_CHAT || req.id == (uint)Codes.GET_ALL_CHATS || req.id == (uint)Codes.SEND_MESSAGE ;
         }
         public override RequestResult HandleRequest(RequestInfo req)
         {
@@ -35,6 +35,9 @@ namespace Handlers
 
                     case (uint)Codes.GET_ALL_CHATS:
                         return GetAllChats(req);
+
+                    case (uint)Codes.SEND_MESSAGE:
+                        return SendMessage(req);
                 }
             }
             catch(Exception e)
@@ -66,7 +69,15 @@ namespace Handlers
         }
         private RequestResult SendMessage(RequestInfo reqInfo)
         {
-            return new RequestResult();
+            RequestResult res = new RequestResult();
+            SendMessageRequest sendMessageRequest;
+            SendMessageResponse sendMessageResponse;
+            res.newHandler = null;
+
+            sendMessageRequest = Deserializer.Deserializer.DeserializeSendMessageRequest(reqInfo.buffer);
+            sendMessageResponse.status = ChatManager.SendMessage(new Message(sendMessageRequest.userID, sendMessageRequest.chatID, sendMessageRequest.content));
+            res.response = Serializer.Serializer.SerializeResponse(sendMessageResponse);
+            return res;
         }
         private RequestResult LoadChat(RequestInfo reqInfo)
         {
@@ -77,7 +88,6 @@ namespace Handlers
             loadChatReq = Deserializer.Deserializer.DeserializeLoadChatRequest(reqInfo.buffer);
             loadChatRes.msg = ChatManager.LoadMessage(loadChatReq.chatID, loadChatReq.offset);
             res.response = Serializer.Serializer.SerializeResponse(loadChatRes);
-            Console.WriteLine(string.Join("", res.response.ToArray()));
             return res;
         }
         private RequestResult GetAllChats(RequestInfo reqInfo)

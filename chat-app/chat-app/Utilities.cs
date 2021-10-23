@@ -32,6 +32,16 @@ namespace Utilities
     {
         public Dictionary<string, string> chats;
     }
+    public struct SendMessageRequest
+    {
+        public int userID;
+        public int chatID;
+        public string content;
+    }
+    public struct SendMessageResponse
+    {
+        public int status;
+    }
     public struct RequestInfo
     {
         public uint id;
@@ -81,7 +91,7 @@ namespace Utilities
     }
     public enum Codes
     {
-        ERROR, LOGIN, SIGNUP, SIGNOUT, LOAD_CHAT, GET_ALL_CHATS, 
+        ERROR, LOGIN, SIGNUP, SIGNOUT, LOAD_CHAT, GET_ALL_CHATS, SEND_MESSAGE
     }
     public enum Defines
     {
