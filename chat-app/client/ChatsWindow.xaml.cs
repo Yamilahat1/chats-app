@@ -122,15 +122,17 @@ namespace client
         }
         private void LoadChat()
         {
-            for (int i = 0; i < 20; i++)
+            string content = lstMessages.Content.ToString();
+            while (true)
             {
                 int prevMsg = m_lastMsg;
                 Message curr = LoadMessage(m_currentChat);
                 if (prevMsg == m_lastMsg) break;
                 messages.Add(curr.Msg);
-                lstMessages.Content += $"{curr.Msg}\n";
+                content += $"{curr.Msg}\n";
             }
             isLoaded = true;
+            lstMessages.Content = content;
             if (!lstMessages.HasContent) lstMessages.Content = "System: Send a message to start chatting!";
         }
         public class Message
