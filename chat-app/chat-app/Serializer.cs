@@ -51,13 +51,21 @@ namespace Serializer
             string chats = "";
             foreach(var chat in res.chats)
             {
-                chats += chat.Key + "-" + chat.Value + ",";
+                chats += chat.Value + "-" + chat.Key + ",";
             }
             return Serialize("Chats", new Dictionary<string, string> { { "Chats", chats } }, Codes.GET_ALL_CHATS);
         }
         public static List<char> SerializeResponse(SendMessageResponse res)
         {
             return Serialize("SendMessage", new Dictionary<string, string> { { "Status", res.status.ToString() } }, Codes.SEND_MESSAGE);
+        }
+        public static List<char> SerializeResponse(CreateChatResponse res)
+        {
+            return Serialize("CreateChat", new Dictionary<string, string> { { "ChatID", res.chatID.ToString() } }, Codes.CREATE_CHAT);
+        }
+        public static List<char> SerializeResponse(AddUserResponse res)
+        {
+            return Serialize("AddUser", new Dictionary<string, string> { { "Status", res.status.ToString() } }, Codes.CREATE_CHAT);
         }
     }
 }

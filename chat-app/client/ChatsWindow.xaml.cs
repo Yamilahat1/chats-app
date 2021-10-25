@@ -8,6 +8,7 @@ using System.Threading;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Input;
+using System.Collections.ObjectModel;
 
 namespace client
 {
@@ -19,9 +20,11 @@ namespace client
         private BackgroundWorker m_bw = new BackgroundWorker();
         private Queue<Byte> m_requests = new Queue<Byte>();
 
-        private Dictionary<string, int> m_chats = new Dictionary<string, int> { }; // name-id
+        // private Dictionary<string, int> m_chats = new Dictionary<string, int> { }; // name-id
+        private List<KeyValuePair<string, int>> m_chats = new List<KeyValuePair<string, int>>();
 
-        private List<Chat> chats = new List<Chat>();
+        // private List<Chat> chats = new List<Chat>();
+        private ObservableCollection<Chat> chats = new ObservableCollection<Chat>();
         private List<string> messages = new List<string>();
 
         private static int m_lastMsg = -1;
@@ -37,10 +40,11 @@ namespace client
             caller.Close();
             m_username = username;
             m_id = id;
+
             InitializeComponent();
             SetupChatsDict();
+
             txtInput.Text = "Type here...";
-            lstChats.ItemsSource = chats;
 
             m_bw.WorkerSupportsCancellation = true;
             m_bw.WorkerReportsProgress = true;
@@ -49,6 +53,11 @@ namespace client
             m_bw.RunWorkerCompleted += m_bw_RunWorkerCompleted;
             m_bw.RunWorkerAsync();
         }
+        private void UpdateListView()
+        {
+            lstChats.Items.Clear();
+            foreach (var chat in m_chats) lstChats.Items.Add(new Chat { Name = chat.Key });
+        }
         private void m_bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             m_bw.CancelAsync();
@@ -56,6 +65,7 @@ namespace client
         private void m_bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             LoadChat();
+            SetupChatsDict();
         }
         private void m_bw_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -81,15 +91,18 @@ namespace client
         }
         private void SetupChatsDict()
         {
+            m_chats.Clear();
+            chats.Clear();
             Communicator.Send("GetAllChats", new Dictionary<string, string> { { "UserID", m_id.ToString() } }, Code.GetAllChats);
             try
             {
                 string[] res = Communicator.Recv()["Chats"].Split(',');
                 res = res.Take(res.Length - 1).ToArray();
-                foreach (var chat in res) m_chats.Add(chat.Split('-')[0], int.Parse(chat.Split('-')[1]));
+                foreach (var chat in res) m_chats.Add(new KeyValuePair<string, int> (chat.Split('-')[0], int.Parse(chat.Split('-')[1])));
                 foreach (var chat in m_chats) chats.Add(new Chat() { Name = chat.Key });
             }
-            catch (Exception) { }
+            catch { }
+            UpdateListView();
         }
         public class Chat
         {
@@ -97,11 +110,17 @@ namespace client
         }
         private void lstChats_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            m_currentChat = m_chats[chats[lstChats.SelectedIndex].Name];
+            if (lstChats.SelectedIndex < 0) return;
+            m_currentChat = m_chats[Convert.ToInt32(lstChats.SelectedIndex)].Value;
             lstMessages.Content = "";
             m_offset = 0;
             isLoaded = false;
             LoadChat();
+        }
+        private int GetIdFromChats(string chatName)
+        {
+            foreach (var chat in m_chats) if (chat.Key == chatName) return chat.Value;
+            return -1;
         }
         private Message LoadMessage(int chatID)
         {
@@ -133,7 +152,7 @@ namespace client
             }
             isLoaded = true;
             lstMessages.Content = content;
-            if (!lstMessages.HasContent) lstMessages.Content = "System: Send a message to start chatting!";
+            if (lstMessages.Content.ToString()=="") lstMessages.Content = "\t\t\t\tSend a message to start chatting!\n";
         }
         public class Message
         {
@@ -164,6 +183,11 @@ namespace client
         private void txtInput_KeyDown(object sender, KeyEventArgs e)
         {
             if (txtInput.Text == "Type here...") txtInput.Text = "";
+        }
+        private void btnOptions_Click(object sender, RoutedEventArgs e)
+        {
+            CreateChat win = new CreateChat(this, m_id);
+            win.ShowDialog();
         }
     }
 }

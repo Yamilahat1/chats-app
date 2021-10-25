@@ -10,13 +10,10 @@ namespace Handlers
 {
     class MainHandler : IHandler
     {
-        public MainHandler()
-        {
 
-        }
         public override bool Validation(RequestInfo req)
         {
-            return req.id == (uint)Codes.SIGNOUT || req.id == (uint)Codes.LOAD_CHAT || req.id == (uint)Codes.GET_ALL_CHATS || req.id == (uint)Codes.SEND_MESSAGE ;
+            return (uint)Codes.SIGNOUT <= req.id && req.id <= (uint)Codes.ADD_USER;
         }
         public override RequestResult HandleRequest(RequestInfo req)
         {
@@ -38,6 +35,12 @@ namespace Handlers
 
                     case (uint)Codes.SEND_MESSAGE:
                         return SendMessage(req);
+
+                    case (uint)Codes.CREATE_CHAT:
+                        return CreateChat(req);
+
+                    case (uint)Codes.ADD_USER:
+                        return AddUserToChat(req);
                 }
             }
             catch(Exception e)
@@ -99,6 +102,28 @@ namespace Handlers
             allChatsReq = Deserializer.Deserializer.DeserializeGetAllChatsRequest(reqInfo.buffer);
             allChatsRes.chats = ChatManager.GetAllChats(allChatsReq.userID);
             res.response = Serializer.Serializer.SerializeResponse(allChatsRes);
+            return res;
+        }
+        private RequestResult CreateChat(RequestInfo reqInfo)
+        {
+            RequestResult res = new RequestResult();
+            CreateChatResponse createChatRes;
+            CreateChatRequest createChatReq;
+            res.newHandler = null;
+            createChatReq = Deserializer.Deserializer.DeserializeCreateChatRequest(reqInfo.buffer);
+            createChatRes.chatID = ChatManager.CreateChat(createChatReq.chatName, createChatReq.adminID);
+            res.response = Serializer.Serializer.SerializeResponse(createChatRes);
+            return res;
+        }
+        private RequestResult AddUserToChat(RequestInfo reqInfo)
+        {
+            RequestResult res = new RequestResult();
+            AddUserResponse addUserRes;
+            AddUserRequest addUserReq;
+            res.newHandler = null;
+            addUserReq = Deserializer.Deserializer.DeserializeAddUserRequest(reqInfo.buffer);
+            addUserRes.status = ChatManager.AddUserToChat(addUserReq.nickname, addUserReq.chatID);
+            res.response = Serializer.Serializer.SerializeResponse(addUserRes);
             return res;
         }
     }

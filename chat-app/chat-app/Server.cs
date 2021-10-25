@@ -86,7 +86,7 @@ namespace Server
                     Send(clientSocket, string.Join("", res.response.ToArray()));
                 }
             }
-            catch(Exception)
+            catch(Exception e)
             {
                 Console.WriteLine($">> Here goes {nick}!");
                 m_names.Add(nick);

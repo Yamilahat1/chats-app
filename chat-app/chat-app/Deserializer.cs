@@ -66,5 +66,21 @@ namespace Deserializer
             obj.content = parsed["Content"];
             return obj;
         }
+        public static CreateChatRequest DeserializeCreateChatRequest(List<char> buff)
+        {
+            CreateChatRequest obj;
+            var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
+            obj.chatName = parsed["ChatName"];
+            obj.adminID = Convert.ToInt32(parsed["AdminID"]);
+            return obj;
+        }
+        public static AddUserRequest DeserializeAddUserRequest(List<char> buff)
+        {
+            AddUserRequest obj;
+            var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
+            obj.chatID = Convert.ToInt32(parsed["ChatID"]);
+            obj.nickname = parsed["Nickname"];
+            return obj;
+        }
     }
 }

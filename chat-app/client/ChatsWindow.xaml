@@ -45,11 +45,12 @@
     <Grid Background="#CC9CB2CE">
 
         <ScrollViewer x:Name="lstMessages" Background="White" FontFamily="Mplus 1p" HorizontalAlignment="Left" Height="358" Margin="182,33,0,0" VerticalAlignment="Top" Width="583"/>
+        <ListView x:Name="lstChats" HorizontalAlignment="Left" Height="337" Margin="10,33,0,0" VerticalAlignment="Top" Width="167" FontFamily="Mplus 1p" ItemContainerStyle="{StaticResource ChatCard}" SelectionChanged="lstChats_SelectionChanged" Background="White"/>
 
-        <ListView x:Name="lstChats" HorizontalAlignment="Left" Height="399" Margin="10,33,0,0" VerticalAlignment="Top" Width="167" ItemsSource="{Binding Name}" FontFamily="Mplus 1p" ItemContainerStyle="{StaticResource ChatCard}" SelectionChanged="lstChats_SelectionChanged" Background="White"/>
         <TextBox x:Name="txtInput" HorizontalAlignment="Left" Height="36" Margin="182,396,0,0" TextWrapping="Wrap" Text="" FontSize="16" FontFamily="Mplus 1p" VerticalAlignment="Top" Width="583" KeyUp="txtInput_KeyUp" GotFocus="txtInput_GotFocus" LostFocus="txtInput_LostFocus" KeyDown="txtInput_KeyDown" />
         <Rectangle x:Name="Top" Fill="#FFF4F4F5" Grid.Column="0" HorizontalAlignment="Left" Height="25" Stroke="Black" VerticalAlignment="Top" Width="792" MouseDown="Top_MouseDown" Margin="0,-3,0,0"/>
         <Ellipse Fill="#AF0606" HorizontalAlignment="Left" Height="18" Margin="770,1,0,0" Stroke="Black" VerticalAlignment="Top" Width="18" MouseUp="Quit_Click" RenderTransformOrigin="-4.389,3" />
+        <Button x:Name="btnOptions" Content="Options" HorizontalAlignment="Left" Height="57" Margin="10,375,0,0" VerticalAlignment="Top" BorderThickness="0" Background="White" Width="167" Click="btnOptions_Click"/>
 
     </Grid>
 </Window>

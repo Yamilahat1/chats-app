@@ -26,5 +26,7 @@ namespace Managers
         }
         public static Dictionary<string, string> LoadMessage(int chatID, int offset) => SqliteDatabase.LoadMessage(chatID, offset);
         public static Dictionary<string, string> GetAllChats(int userID) => SqliteDatabase.GetAllChats(userID);
+        public static int CreateChat(string chatName, int admin) => SqliteDatabase.CreateChat(chatName, admin);
+        public static int AddUserToChat(string nickname, int chatID) => SqliteDatabase.AddUserToChat(chatID, nickname);
     }
 }

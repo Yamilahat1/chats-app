@@ -33,7 +33,7 @@ namespace Server
             m_db.ExecuteNonQuery();
 
             // Create chat table
-            m_db.CommandText = @"CREATE TABLE tChat(id INTEGER NOT NULL PRIMARY KEY, name TEXT, type BOOLEAN);";
+            m_db.CommandText = @"CREATE TABLE tChat(id INTEGER NOT NULL PRIMARY KEY, name TEXT, adminID INTEGER);";
             m_db.ExecuteNonQuery();
 
             m_db.CommandText = @"CREATE TABLE tParticipants(id INTEGER NOT NULL PRIMARY KEY, userID INTEGER, roomID INTEGER);";
@@ -49,7 +49,7 @@ namespace Server
             AddUser("Alice", "Alice");
 
             // Example chat
-            m_db.CommandText = "INSERT INTO tChat(name, type) VALUES ('cool chat', false);";
+            m_db.CommandText = "INSERT INTO tChat(name, adminID) VALUES ('cool chat', 1);";
             m_db.ExecuteNonQuery();
 
             m_db.CommandText = "INSERT INTO tParticipants(userID, roomID) VALUES (1, 1);";
@@ -174,15 +174,71 @@ namespace Server
         }
         public static Dictionary<string, string> GetAllChats(int userID)
         {
-            m_db.CommandText = string.Format("SELECT name, id FROM tChat WHERE id IN (SELECT roomID FROM tParticipants WHERE userID={0});", userID);
+            m_db.CommandText = string.Format("SELECT name, id FROM tChat WHERE id IN (SELECT roomID FROM tParticipants WHERE userID = {0});", userID);
             SQLiteDataReader reader = m_db.ExecuteReader();
             Dictionary<string, string> chats = new Dictionary<string, string>();
-            while(reader.Read())
+            try
             {
-                chats.Add(reader.GetValue(0).ToString(), reader.GetValue(1).ToString());
+                while (reader.Read())
+                {
+                    chats.Add(reader.GetValue(1).ToString(), reader.GetValue(0).ToString());
+                }
+            }
+            catch
+            {
+                reader.Close();
             }
             reader.Close();
             return chats;
+        }
+        public static int CreateChat(string chatName, int admin)
+        {
+            Execute(string.Format("INSERT INTO tChat(name, adminID) VALUES (\"{0}\", {1});", chatName, admin.ToString()));
+
+            m_db.CommandText = "SELECT last_insert_rowid();";
+            Int64 id = (Int64)m_db.ExecuteScalar();
+            int chatID = (int)id;
+            AddUserToChat(chatID, GetNickname(admin));
+            return chatID;
+        }
+        public static bool IsUserInChat(int chatID, int userID)
+        {
+            m_db.CommandText = $"SELECT userID FROM tParticipants WHERE roomID = {chatID.ToString()}";
+            SQLiteDataReader reader = m_db.ExecuteReader();
+            while (reader.Read())
+            {
+                for(int i = 0; i < reader.FieldCount; i++)
+                {
+                    if (reader.GetValue(i).ToString().Equals(chatID.ToString()))
+                    {
+                        reader.Close();
+                        return true;
+                    }
+                }
+            }
+            reader.Close();
+            return false;
+        }
+        public static int AddUserToChat(int chatID, string nickname)
+        {
+            int userID = GetIDByNick(nickname);
+            if (IsUserInChat(chatID, userID)) return 0;
+            Execute(string.Format("INSERT INTO tParticipants(userID, roomID) VALUES ({0}, {1});", userID.ToString(), chatID.ToString()));
+            return 1;
+        }
+        private static int GetIDByNick(string nickname)
+        {
+            m_db.CommandText = string.Format("SELECT id FROM tUser WHERE nickname=\"{0}\"", nickname);
+            SQLiteDataReader reader = m_db.ExecuteReader();
+            reader.Read();
+            int id = Convert.ToInt32(reader.GetValue(0).ToString());
+            reader.Close();
+            return id;
+        }
+        public static void RemoveUserFromChat(int chatID, int userID)
+        {
+            if (!IsUserInChat(chatID, userID)) return;
+            Execute(string.Format("DELETE FROM tParticipants WHERE roomID = {0} AND userID = {1};", chatID.ToString(), userID.ToString()));
         }
     }
 }
