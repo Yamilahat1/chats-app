@@ -12,6 +12,10 @@ namespace Server
     {
         private static SQLiteCommand m_db;
         private static SQLiteConnection m_connection;
+
+        /// <summary>
+        /// Method will start the DB
+        /// </summary>
         public static void InitDatabase()
         {
             string cs = @"URI=file:ChatsApp.db";
@@ -26,6 +30,10 @@ namespace Server
             }
             catch (Exception) { }
         }
+
+        /// <summary>
+        /// Method will create empty tables in case that the DB doesn't exist
+        /// </summary>
         static void CreateTables()
         {
             // Create user table
@@ -42,6 +50,10 @@ namespace Server
             m_db.CommandText = @"CREATE TABLE tMessage(id INTEGER NOT NULL PRIMARY KEY, roomID INTEGER, userID INTEGER, message TEXT);";
             m_db.ExecuteNonQuery();
         }
+
+        /// <summary>
+        /// Method will set default example values in the tables
+        /// </summary>
         static void InitDefaults()
         {
             // Example users
@@ -64,11 +76,22 @@ namespace Server
             m_db.CommandText = "INSERT INTO tMessage(roomID, userID, message) VALUES (1, 2, 'hi bob');";
             m_db.ExecuteNonQuery();
         }
+
+        /// <summary>
+        /// Method will perform query execution
+        /// </summary>
+        /// <param name="query"> The query as a string </param>
         static void Execute(string query)
         {
             m_db.CommandText = query;
             m_db.ExecuteNonQuery();
         }
+
+        /// <summary>
+        /// Method will check if user with such username already exists in the DB
+        /// </summary>
+        /// <param name="username"> The username </param>
+        /// <returns> Status </returns>
         public static bool DoesUserExist(string username)
         {
             m_db.CommandText = string.Format("SELECT username FROM tUser");
@@ -86,12 +109,25 @@ namespace Server
             reader.Close();
             return false;
         }
+
+        /// <summary>
+        /// Method will sign a new user to the DB
+        /// </summary>
+        /// <param name="username"> The user's username </param>
+        /// <param name="password"> The user's password </param>
         public static void AddUser(string username, string password)
         {
             string salt = Guid.NewGuid().ToString();
             password = HashString(password, salt);
             Execute(string.Format("INSERT INTO tUser(username, password, salt, nickname, status) VALUES ('{0}', '{1}', '{2}', '{0}', 'Amogus');", username, password, salt));
         }
+
+        /// <summary>
+        /// Method will perform hash function on a given password+salt
+        /// </summary>
+        /// <param name="text"> The user's password </param>
+        /// <param name="salt"> Random salt: A random string which we attach to the password in order to hash them together </param>
+        /// <returns> The hashed password </returns>
         private static string HashString(string text, string salt)
         {
             using (var sha = new SHA256Managed())
@@ -102,6 +138,12 @@ namespace Server
                 return hash;
             }
         }
+
+        /// <summary>
+        /// Method will grab the user's salt from the DB
+        /// </summary>
+        /// <param name="username"> The username </param>
+        /// <returns> The users salt </returns>
         public static string GetUserSalt(string username)
         {
             string salt;
@@ -119,6 +161,13 @@ namespace Server
             reader.Close();
             return salt;
         }
+
+        /// <summary>
+        /// Method will validate a login request
+        /// </summary>
+        /// <param name="username"> Username </param>
+        /// <param name="password"> Password </param>
+        /// <returns> Status </returns>
         public static List<int> LoginUser(string username, string password)
         { 
             string hashedPassword = HashString(password, GetUserSalt(username));
@@ -133,6 +182,14 @@ namespace Server
             reader.Close();
             return res;
         }
+
+        /// <summary>
+        /// Method will add a new message to the database
+        /// </summary>
+        /// <param name="roomID"> Where the message has been sent </param>
+        /// <param name="senderID"> Who sent the message </param>
+        /// <param name="msgContent"> The message </param>
+        /// <returns></returns>
         public static int SendMessage(int roomID, int senderID, string msgContent)
         {
             try
@@ -142,6 +199,13 @@ namespace Server
             catch { return 0; }
             return 1;
         }
+
+        /// <summary>
+        /// Method will return the n message from a certain chat
+        /// </summary>
+        /// <param name="roomID"> The chat </param>
+        /// <param name="offset"> Indicates which message to read </param>
+        /// <returns> The message </returns>
         public static Dictionary<string, string> LoadMessage(int roomID, int offset = 0)
         {
             var msg = new Dictionary<string, string> { };
@@ -163,6 +227,12 @@ namespace Server
             msg.Add("MessageID", msgID);
             return msg;
         }
+
+        /// <summary>
+        /// Method will get user's nickname by his id
+        /// </summary>
+        /// <param name="id"> The user's id </param>
+        /// <returns> The user's nickname </returns>
         public static string GetNickname(int id)
         {
             m_db.CommandText = string.Format("SELECT nickname FROM tUser WHERE id={0}", id);
@@ -172,6 +242,12 @@ namespace Server
             reader.Close();
             return nick;
         }
+
+        /// <summary>
+        /// Method will return all the chats of a user
+        /// </summary>
+        /// <param name="userID"> The user's id </param>
+        /// <returns> Dictionary of all the chats names + id </returns>
         public static Dictionary<string, string> GetAllChats(int userID)
         {
             m_db.CommandText = string.Format("SELECT name, id FROM tChat WHERE id IN (SELECT roomID FROM tParticipants WHERE userID = {0});", userID);
@@ -191,6 +267,13 @@ namespace Server
             reader.Close();
             return chats;
         }
+
+        /// <summary>
+        /// Method will add a new chat to the database
+        /// </summary>
+        /// <param name="chatName"> The new chat name </param>
+        /// <param name="admin"> The chat's admin </param>
+        /// <returns> The new chat's id </returns>
         public static int CreateChat(string chatName, int admin)
         {
             Execute(string.Format("INSERT INTO tChat(name, adminID) VALUES (\"{0}\", {1});", chatName, admin.ToString()));
@@ -201,6 +284,13 @@ namespace Server
             AddUserToChat(chatID, GetNickname(admin));
             return chatID;
         }
+
+        /// <summary>
+        /// Method will check if user exists in a certain chat
+        /// </summary>
+        /// <param name="chatID"> The chat's id </param>
+        /// <param name="userID"> The user's id </param>
+        /// <returns> If the user exists or not </returns>
         public static bool IsUserInChat(int chatID, int userID)
         {
             m_db.CommandText = $"SELECT userID FROM tParticipants WHERE roomID = {chatID.ToString()}";
@@ -219,6 +309,13 @@ namespace Server
             reader.Close();
             return false;
         }
+
+        /// <summary>
+        /// Method will add a user to a chat
+        /// </summary>
+        /// <param name="chatID"> The chat's id </param>
+        /// <param name="nickname"> The nickname of the user </param>
+        /// <returns> Status </returns>
         public static int AddUserToChat(int chatID, string nickname)
         {
             int userID = GetIDByNick(nickname);
@@ -226,6 +323,12 @@ namespace Server
             Execute(string.Format("INSERT INTO tParticipants(userID, roomID) VALUES ({0}, {1});", userID.ToString(), chatID.ToString()));
             return 1;
         }
+
+        /// <summary>
+        /// Method will find the ID of a user according to his nickname
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <returns></returns>
         private static int GetIDByNick(string nickname)
         {
             m_db.CommandText = string.Format("SELECT id FROM tUser WHERE nickname=\"{0}\"", nickname);
@@ -235,6 +338,12 @@ namespace Server
             reader.Close();
             return id;
         }
+
+        /// <summary>
+        /// Method will remove user from chat
+        /// </summary>
+        /// <param name="chatID"> The user's id </param>
+        /// <param name="userID"> The chat's id </param>
         public static void RemoveUserFromChat(int chatID, int userID)
         {
             if (!IsUserInChat(chatID, userID)) return;

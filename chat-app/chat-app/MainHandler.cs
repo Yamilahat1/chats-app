@@ -10,11 +10,21 @@ namespace Handlers
 {
     class MainHandler : IHandler
     {
-
+        /// <summary>
+        /// Method will check if the request is valid in the current context according to the id
+        /// </summary>
+        /// <param name="req"> The reuqest </param>
+        /// <returns> If the request is valid or not </returns>
         public override bool Validation(RequestInfo req)
         {
             return (uint)Codes.SIGNOUT <= req.id && req.id <= (uint)Codes.ADD_USER;
         }
+
+        /// <summary>
+        /// Method will handle request by redirecting it to the matching method
+        /// </summary>
+        /// <param name="req"> The request </param>
+        /// <returns> The server's response </returns>
         public override RequestResult HandleRequest(RequestInfo req)
         {
             RequestResult handler = new RequestResult();
@@ -49,6 +59,12 @@ namespace Handlers
             }
             return handler;
         }
+
+        /// <summary>
+        /// Method will handle a signout request
+        /// </summary>
+        /// <param name="reqInfo"> The request </param>
+        /// <returns> The server's response </returns>
         private RequestResult Signout(RequestInfo reqInfo)
         {
             RequestResult res = new RequestResult();
@@ -70,6 +86,12 @@ namespace Handlers
 
             return res;
         }
+
+        /// <summary>
+        /// Method will handle a SendMessage request
+        /// </summary>
+        /// <param name="reqInfo"> The request </param>
+        /// <returns> The server's response </returns>
         private RequestResult SendMessage(RequestInfo reqInfo)
         {
             RequestResult res = new RequestResult();
@@ -82,6 +104,12 @@ namespace Handlers
             res.response = Serializer.Serializer.SerializeResponse(sendMessageResponse);
             return res;
         }
+
+        /// <summary>
+        /// Method will handle a LoadChat request
+        /// </summary>
+        /// <param name="reqInfo"> The request </param>
+        /// <returns> The server's response </returns>
         private RequestResult LoadChat(RequestInfo reqInfo)
         {
             RequestResult res = new RequestResult();
@@ -93,6 +121,12 @@ namespace Handlers
             res.response = Serializer.Serializer.SerializeResponse(loadChatRes);
             return res;
         }
+
+        /// <summary>
+        /// Method will handle a GetAllChats request
+        /// </summary>
+        /// <param name="reqInfo"> The request </param>
+        /// <returns> The server's response </returns>
         private RequestResult GetAllChats(RequestInfo reqInfo)
         {
             RequestResult res = new RequestResult();
@@ -104,6 +138,12 @@ namespace Handlers
             res.response = Serializer.Serializer.SerializeResponse(allChatsRes);
             return res;
         }
+
+        /// <summary>
+        /// Method will handle a CreateChat request
+        /// </summary>
+        /// <param name="reqInfo"> The request </param>
+        /// <returns> The server's response </returns>
         private RequestResult CreateChat(RequestInfo reqInfo)
         {
             RequestResult res = new RequestResult();
@@ -115,6 +155,12 @@ namespace Handlers
             res.response = Serializer.Serializer.SerializeResponse(createChatRes);
             return res;
         }
+
+        /// <summary>
+        /// Method will handle an AddUserToChat request
+        /// </summary>
+        /// <param name="reqInfo"> The request </param>
+        /// <returns> The server's response </returns>
         private RequestResult AddUserToChat(RequestInfo reqInfo)
         {
             RequestResult res = new RequestResult();

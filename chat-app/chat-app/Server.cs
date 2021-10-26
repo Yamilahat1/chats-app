@@ -16,6 +16,10 @@ namespace Server
         private const int MAX_CLIENTS = 10;
         private const int BUFFER_SIZE = 1024;
         private static List<string> m_names;
+
+        /// <summary>
+        /// Method will start the server, which means setting up the port and listen while true + detaching a thread for each client
+        /// </summary>
         public static void Start()
         {
             string nick;
@@ -46,6 +50,7 @@ namespace Server
                         nick = "amogus";
                     }
                     Console.WriteLine($">> A wild {nick} appears!");
+                    
                     // Just create a thread to handle the new client and detach
                     Thread t = new Thread(() => HandleClient(clientSocket, nick));
                     t.Start();
@@ -57,6 +62,12 @@ namespace Server
                 Console.WriteLine(e.ToString());
             }
         }
+
+        /// <summary>
+        /// Method will handle the client: recieve a reuqest and finally send a response
+        /// </summary>
+        /// <param name="clientSocket"> The client's socket </param>
+        /// <param name="nick"> A random nickname for the client which only appears in the DOS </param>
         private static void HandleClient(Socket clientSocket, string nick)
         {
             IHandler handler = new LoginHandler();
@@ -70,20 +81,25 @@ namespace Server
             {
                 while (true)
                 {
+                    // Prepare for a new message
                     headers = "";
                     buffer.Clear();
+
+                    // Receive a new message (first receive only the headers, then the rest according to the headers)
                     headers = Recv(clientSocket, (int)Defines.LEN_END);
-                    msgLen = Convert.ToInt32(headers.Substring((int)Defines.LEN_BEGIN, (int)Defines.LEN_END - (int)Defines.LEN_BEGIN));
+                    msgLen = Convert.ToInt32(headers.Substring((int)Defines.LEN_BEGIN, (int)Defines.LEN_END - (int)Defines.LEN_BEGIN)); // Figure the data len according to the headers
                     if (msgLen > 0) data = Recv(clientSocket, msgLen);
+
+                    // Building the reqInfo object according to the data we have received
                     reqInfo.id = (uint)headers[(int)Defines.MSG_CODE] - '0';
                     PushToBuffer(ref buffer, headers, data, msgLen);
                     reqInfo.buffer = buffer;
 
-                    if (!handler.Validation(reqInfo)) continue;
-                    res = handler.HandleRequest(reqInfo);
-                    if (res.newHandler != null) handler = res.newHandler;
+                    if (!handler.Validation(reqInfo)) continue; // If the request doesnt match the handler the server won't accept it and just ignore the request
+                    res = handler.HandleRequest(reqInfo); // Handle the request
+                    if (res.newHandler != null) handler = res.newHandler; // Assign a new handler in case that's necessary
 
-                    Send(clientSocket, string.Join("", res.response.ToArray()));
+                    Send(clientSocket, string.Join("", res.response.ToArray())); // Finally send the response back to the client
                 }
             }
             catch(Exception e)
@@ -95,11 +111,26 @@ namespace Server
                 clientSocket.Close();
             }
         }
+
+        /// <summary>
+        /// Method will combine all segments of the message and push it into one buffer
+        /// </summary>
+        /// <param name="buffer"> A reference to the buffer </param>
+        /// <param name="headers"> The headers of the message </param>
+        /// <param name="msg"> The msg data </param>
+        /// <param name="msgLen"> The length of the message </param>
         private static void PushToBuffer(ref List<char> buffer, string headers, string msg, int msgLen)
         {
             for (int i = 0; i < (int)Defines.LEN_END; i++) buffer.Add(headers[i]);
             for (int i = 0; i < msgLen; i++) buffer.Add(msg[i]);
         }
+
+        /// <summary>
+        /// Method will receive a new message from a given client
+        /// </summary>
+        /// <param name="clientSocket"> The socket of the sender client </param>
+        /// <param name="size"> Buffer size </param>
+        /// <returns></returns>
         private static string Recv(Socket clientSocket, int size = BUFFER_SIZE)
         {
             byte[] bytes = new byte[size];
@@ -109,11 +140,21 @@ namespace Server
             data += Encoding.ASCII.GetString(bytes, 0, numByte);
             return data;
         }
+
+        /// <summary>
+        /// Method will send a message to a given client
+        /// </summary>
+        /// <param name="clientSocket"> The socket of the target client </param>
+        /// <param name="msg"> The message to be sent </param>
         private static void Send(Socket clientSocket, string msg)
         {
             byte[] message = Encoding.ASCII.GetBytes(msg);
             clientSocket.Send(message);
         }
+
+        /// <summary>
+        /// Method will load random names from a txt file
+        /// </summary>
         private static void LoadNames()
         {
             using (StreamReader sr = new StreamReader("names.txt"))
@@ -124,10 +165,16 @@ namespace Server
             m_names.Shuffle();
         }
     }
+
     static class ExtensionsClass
     {
         private static Random rng = new Random();
 
+        /// <summary>
+        /// This extention method will allow us to shuffle a list
+        /// </summary>
+        /// <typeparam name="T"> The type of the elements in the list </typeparam>
+        /// <param name="list"> A given list </param>
         public static void Shuffle<T>(this IList<T> list)
         {
             int n = list.Count;
