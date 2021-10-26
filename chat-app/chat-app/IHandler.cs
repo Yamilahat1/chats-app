@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Utilities;
+﻿using Utilities;
 
 namespace Handlers
 {
@@ -12,7 +9,7 @@ namespace Handlers
         {
             return true;
         }
-        
+
         // Handle a new request
         public virtual RequestResult HandleRequest(RequestInfo req)
         {

@@ -1,8 +1,5 @@
-﻿using System;
+﻿using Server;
 using System.Collections.Generic;
-using System.Text;
-using System.Globalization;
-using Server;
 
 namespace Managers
 {
@@ -11,6 +8,7 @@ namespace Managers
         public int senderID;
         public int chatID;
         public string content;
+
         public Message(int sender, int chat, string content)
         {
             senderID = sender;
@@ -18,7 +16,8 @@ namespace Managers
             this.content = content;
         }
     }
-    class ChatManager
+
+    internal class ChatManager
     {
         /// <summary>
         /// Method will call the sql query to send message

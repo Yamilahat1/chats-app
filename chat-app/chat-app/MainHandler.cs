@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Managers;
+using System;
 using Utilities;
-using Deserializer;
-using Managers;
-using Serializer;
 
 namespace Handlers
 {
-    class MainHandler : IHandler
+    internal class MainHandler : IHandler
     {
         /// <summary>
         /// Method will check if the request is valid in the current context according to the id
@@ -32,7 +28,7 @@ namespace Handlers
 
             try
             {
-                switch(req.id)
+                switch (req.id)
                 {
                     case (uint)Codes.SIGNOUT:
                         return Signout(req);
@@ -53,7 +49,7 @@ namespace Handlers
                         return AddUserToChat(req);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 handler.response = Serializer.Serializer.SerializeResponse(new ErrorResponse(e));
             }
@@ -76,7 +72,7 @@ namespace Handlers
             signoutRes.status = 1;
             res.response = Serializer.Serializer.SerializeResponse(signoutRes);
             if (LoginManager.Signout(signoutReq.username))
-            { 
+            {
                 res.newHandler = new LoginHandler();
             }
             else

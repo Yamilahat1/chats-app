@@ -3,16 +3,17 @@ using System.Threading;
 
 namespace Server
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             try
             {
                 SqliteDatabase.InitDatabase();
                 Thread t = new Thread(() => Server.Start());
                 t.Start();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine($"Server error: {e}");
             }

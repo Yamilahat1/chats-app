@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using Managers;
+
 // Todo: add mutex
 namespace Server
 {
-    static class SqliteDatabase
+    internal static class SqliteDatabase
     {
         private static SQLiteCommand m_db;
         private static SQLiteConnection m_connection;
@@ -34,7 +33,7 @@ namespace Server
         /// <summary>
         /// Method will create empty tables in case that the DB doesn't exist
         /// </summary>
-        static void CreateTables()
+        private static void CreateTables()
         {
             // Create user table
             m_db.CommandText = @"CREATE TABLE tUser(id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, salt TEXT, nickname TEXT, status TEXT);";
@@ -54,7 +53,7 @@ namespace Server
         /// <summary>
         /// Method will set default example values in the tables
         /// </summary>
-        static void InitDefaults()
+        private static void InitDefaults()
         {
             // Example users
             AddUser("Bob", "Bob");
@@ -81,7 +80,7 @@ namespace Server
         /// Method will perform query execution
         /// </summary>
         /// <param name="query"> The query as a string </param>
-        static void Execute(string query)
+        private static void Execute(string query)
         {
             m_db.CommandText = query;
             m_db.ExecuteNonQuery();
@@ -169,7 +168,7 @@ namespace Server
         /// <param name="password"> Password </param>
         /// <returns> Status </returns>
         public static List<int> LoginUser(string username, string password)
-        { 
+        {
             string hashedPassword = HashString(password, GetUserSalt(username));
             List<int> res = new List<int>();
             m_db.CommandText = string.Format("SELECT password, id FROM tUser WHERE username='{0}';", username);
@@ -297,7 +296,7 @@ namespace Server
             SQLiteDataReader reader = m_db.ExecuteReader();
             while (reader.Read())
             {
-                for(int i = 0; i < reader.FieldCount; i++)
+                for (int i = 0; i < reader.FieldCount; i++)
                 {
                     if (reader.GetValue(i).ToString().Equals(chatID.ToString()))
                     {

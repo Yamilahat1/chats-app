@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace client
 {
@@ -21,12 +10,14 @@ namespace client
     {
         private int m_userID;
         private ChatsWindow m_prevWindow;
+
         public CreateChat(ChatsWindow caller, int userID)
         {
             InitializeComponent();
             m_userID = userID;
             m_prevWindow = caller;
         }
+
         private void btnCreateChat_Click(object sender, RoutedEventArgs e)
         {
             bool isOK = true;
@@ -47,6 +38,7 @@ namespace client
             }
             if (isOK) this.Close();
         }
+
         private void DisplayError(string error, bool toClear)
         {
             if (toClear) txtError.Content = "";

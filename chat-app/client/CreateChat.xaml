@@ -7,12 +7,11 @@
         mc:Ignorable="d"
         Title="CreateChat" Height="450" Width="300">
     <Grid>
-        <TextBox x:Name="txtChatName" HorizontalAlignment="Left" Height="27" Margin="115,84,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="141"/>
-        <Label Content="Chat name: " HorizontalAlignment="Left" Margin="37,84,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtParticipants" HorizontalAlignment="Left" Height="27" Margin="115,115,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="141"/>
-        <Label Content="Participants: " HorizontalAlignment="Left" Margin="37,115,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="btnCreateChat" Content="Create chat" HorizontalAlignment="Left" Margin="115,155,0,0" VerticalAlignment="Top" Width="75" Click="btnCreateChat_Click"/>
-        <Label x:Name="txtError" Content=""  Foreground="Red" Visibility="Hidden" HorizontalAlignment="Left" Margin="37,180,0,0" VerticalAlignment="Top" Width="219" HorizontalContentAlignment="Center" Height="229"/>
-
+        <TextBox x:Name="txtChatName" HorizontalAlignment="Left" Height="27" Margin="115,84,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="141" />
+        <Label Content="Chat name: " HorizontalAlignment="Left" Margin="37,84,0,0" VerticalAlignment="Top" />
+        <TextBox x:Name="txtParticipants" HorizontalAlignment="Left" Height="27" Margin="115,115,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="141" />
+        <Label Content="Participants: " HorizontalAlignment="Left" Margin="37,115,0,0" VerticalAlignment="Top" />
+        <Button x:Name="btnCreateChat" Content="Create chat" HorizontalAlignment="Left" Margin="115,155,0,0" VerticalAlignment="Top" Width="75" Click="btnCreateChat_Click" />
+        <Label x:Name="txtError" Content=""  Foreground="Red" Visibility="Hidden" HorizontalAlignment="Left" Margin="37,180,0,0" VerticalAlignment="Top" Width="219" HorizontalContentAlignment="Center" Height="229" />
     </Grid>
 </Window>

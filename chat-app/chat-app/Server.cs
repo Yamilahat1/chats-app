@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Handlers;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using Utilities;
-using Handlers;
-using System.Text;
-using System.IO;
 
 namespace Server
 {
-    class Server
+    internal class Server
     {
         private const int PORT = 8888;
         private const int MAX_CLIENTS = 10;
@@ -40,7 +40,7 @@ namespace Server
                 while (true)
                 {
                     Socket clientSocket = listener.Accept();
-                    if (m_names.Count>0)
+                    if (m_names.Count > 0)
                     {
                         nick = m_names[0];
                         m_names.Remove(nick);
@@ -50,13 +50,12 @@ namespace Server
                         nick = "amogus";
                     }
                     Console.WriteLine($">> A wild {nick} appears!");
-                    
+
                     // Just create a thread to handle the new client and detach
                     Thread t = new Thread(() => HandleClient(clientSocket, nick));
                     t.Start();
                 }
             }
-
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
@@ -102,7 +101,7 @@ namespace Server
                     Send(clientSocket, string.Join("", res.response.ToArray())); // Finally send the response back to the client
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine($">> Here goes {nick}!");
                 m_names.Add(nick);
@@ -160,13 +159,13 @@ namespace Server
             using (StreamReader sr = new StreamReader("names.txt"))
             {
                 string line;
-                while((line = sr.ReadLine()) != null) m_names.Add(line);
+                while ((line = sr.ReadLine()) != null) m_names.Add(line);
             }
             m_names.Shuffle();
         }
     }
 
-    static class ExtensionsClass
+    internal static class ExtensionsClass
     {
         private static Random rng = new Random();
 

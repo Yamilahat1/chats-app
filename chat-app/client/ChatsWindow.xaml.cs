@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Media;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Threading;
-using System.Collections;
-using System.ComponentModel;
 using System.Windows.Input;
-using System.Collections.ObjectModel;
 
 namespace client
 {
@@ -25,6 +24,7 @@ namespace client
 
         // private List<Chat> chats = new List<Chat>();
         private ObservableCollection<Chat> chats = new ObservableCollection<Chat>();
+
         private List<string> messages = new List<string>();
 
         private static int m_lastMsg = -1;
@@ -35,6 +35,7 @@ namespace client
 
         private bool kill = false;
         private bool isLoaded = false;
+
         public ChatsWindow(Window caller, string username, int id)
         {
             caller.Close();
@@ -53,23 +54,27 @@ namespace client
             m_bw.RunWorkerCompleted += m_bw_RunWorkerCompleted;
             m_bw.RunWorkerAsync();
         }
+
         private void UpdateListView()
         {
             lstChats.Items.Clear();
             foreach (var chat in m_chats) lstChats.Items.Add(new Chat { Name = chat.Key });
         }
+
         private void m_bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             m_bw.CancelAsync();
         }
+
         private void m_bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             LoadChat();
             SetupChatsDict();
         }
+
         private void m_bw_DoWork(object sender, DoWorkEventArgs e)
         {
-            while(!kill)
+            while (!kill)
             {
                 if (!isLoaded || m_requests.Count > 0) continue;
                 m_bw.ReportProgress(0);
@@ -77,6 +82,7 @@ namespace client
             }
             e.Cancel = true;
         }
+
         private void Quit_Click(object sender, RoutedEventArgs e)
         {
             SoundPlayer player = new SoundPlayer();
@@ -89,6 +95,7 @@ namespace client
             Communicator.Send("SignoutRequest", new Dictionary<string, string> { { "Username", m_username } }, Code.Signout);
             this.Close();
         }
+
         private void SetupChatsDict()
         {
             m_chats.Clear();
@@ -98,16 +105,18 @@ namespace client
             {
                 string[] res = Communicator.Recv()["Chats"].Split(',');
                 res = res.Take(res.Length - 1).ToArray();
-                foreach (var chat in res) m_chats.Add(new KeyValuePair<string, int> (chat.Split('-')[0], int.Parse(chat.Split('-')[1])));
+                foreach (var chat in res) m_chats.Add(new KeyValuePair<string, int>(chat.Split('-')[0], int.Parse(chat.Split('-')[1])));
                 foreach (var chat in m_chats) chats.Add(new Chat() { Name = chat.Key });
             }
             catch { }
             UpdateListView();
         }
+
         public class Chat
         {
             public string Name { get; set; }
         }
+
         private void lstChats_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (lstChats.SelectedIndex < 0) return;
@@ -117,11 +126,13 @@ namespace client
             isLoaded = false;
             LoadChat();
         }
+
         private int GetIdFromChats(string chatName)
         {
             foreach (var chat in m_chats) if (chat.Key == chatName) return chat.Value;
             return -1;
         }
+
         private Message LoadMessage(int chatID)
         {
             m_requests.Enqueue(1);
@@ -139,6 +150,7 @@ namespace client
             m_offset++;
             return new Message() { Msg = string.Format("{0}: {1}", res["Sender"] == m_username ? "You" : res["Sender"], res["Content"]) };
         }
+
         private void LoadChat()
         {
             string content = lstMessages.Content.ToString();
@@ -152,12 +164,14 @@ namespace client
             }
             isLoaded = true;
             lstMessages.Content = content;
-            if (lstMessages.Content.ToString()=="") lstMessages.Content = "\t\t\t\tSend a message to start chatting!\n";
+            if (lstMessages.Content.ToString() == "") lstMessages.Content = "\t\t\t\tSend a message to start chatting!\n";
         }
+
         public class Message
         {
             public string Msg { get; set; }
         }
+
         private void Top_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left) this.DragMove();
@@ -171,19 +185,23 @@ namespace client
             var res = Communicator.Recv();
             if (Convert.ToInt32(res["Status"]) == 1) txtInput.Text = "Type here...";
         }
+
         private void txtInput_GotFocus(object sender, RoutedEventArgs e)
         {
             if (txtInput.Text != "Type here...") return;
             txtInput.Text = "";
         }
+
         private void txtInput_LostFocus(object sender, RoutedEventArgs e)
         {
             txtInput.Text = "Type here...";
         }
+
         private void txtInput_KeyDown(object sender, KeyEventArgs e)
         {
             if (txtInput.Text == "Type here...") txtInput.Text = "";
         }
+
         private void btnOptions_Click(object sender, RoutedEventArgs e)
         {
             CreateChat win = new CreateChat(this, m_id);

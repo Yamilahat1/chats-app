@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Managers;
+using System;
 using Utilities;
-using Deserializer;
-using Managers;
-using Serializer;
 
 namespace Handlers
 {
-    class LoginHandler : IHandler
+    internal class LoginHandler : IHandler
     {
         public LoginHandler()
         {

@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Utilities;
-using XmlManagement;
-using Server;
-using System.Xml;
-using System.IO;
 
 namespace Serializer
 {
-    class Serializer
+    internal class Serializer
     {
         /// <summary>
         /// Method will add the necessary headers to the response
@@ -26,7 +21,6 @@ namespace Serializer
             for (int i = 0; i < length.Length; i++) buff.Add(length[i]);
             for (int i = 0; i < msg.Length; i++) buff.Add(msg[i]);
             return buff;
-
         }
 
         /// <summary>
@@ -78,7 +72,7 @@ namespace Serializer
         /// <returns> A buffer which represents the reponse </returns>
         public static List<char> SerializeResponse(LoginResponse res)
         {
-            return Serialize("Login", new Dictionary<string, string> { { "Status", res.status.ToString() }, {"id", res.id.ToString() } }, Codes.LOGIN);
+            return Serialize("Login", new Dictionary<string, string> { { "Status", res.status.ToString() }, { "id", res.id.ToString() } }, Codes.LOGIN);
         }
 
         /// <summary>
@@ -99,7 +93,7 @@ namespace Serializer
         public static List<char> SerializeResponse(GetAllChatsResponse res)
         {
             string chats = "";
-            foreach(var chat in res.chats)
+            foreach (var chat in res.chats)
             {
                 chats += chat.Value + "-" + chat.Key + ",";
             }

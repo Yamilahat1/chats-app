@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Utilities;
-using System.Xml.Linq;
-using System.Xml.Serialization;
-using System.IO;
-using XmlManagement;
 
 namespace Deserializer
 {
     public static class ListExtention
-    { 
+    {
         /// <summary>
         /// This extention of the list data structor allows us to use custom method
         /// which helps in extracting data from message (ignoring the headers section)

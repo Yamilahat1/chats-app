@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
-using Managers;
 
 namespace Utilities
 {
@@ -11,55 +7,67 @@ namespace Utilities
     {
         public string username;
     }
+
     public struct SignoutResponse
     {
         public uint status;
     }
+
     public struct LoadChatRequest
     {
         public int chatID;
         public int offset;
     }
+
     public struct LoadChatResponse
     {
         public Dictionary<string, string> msg; // sender/content
     }
+
     public struct GetAllChatsRequest
     {
         public int userID;
     }
+
     public struct GetAllChatsResponse
     {
         public Dictionary<string, string> chats;
     }
+
     public struct AddUserRequest
     {
         public string nickname;
         public int chatID;
     }
+
     public struct AddUserResponse
     {
         public int status;
     }
+
     public struct CreateChatRequest
     {
         public string chatName;
         public int adminID;
     }
+
     public struct CreateChatResponse
     {
         public int chatID;
     }
+
     public struct SendMessageRequest
     {
         public int userID;
         public int chatID;
         public string content;
     }
+
     public struct SendMessageResponse
     {
         public int status;
     }
+
     public struct RequestInfo
     {
         public uint id;
@@ -94,6 +102,7 @@ namespace Utilities
         public string username;
         public string password;
     }
+
     public struct ErrorResponse
     {
         public string msg;
@@ -102,15 +111,18 @@ namespace Utilities
         {
             this.msg = e;
         }
+
         public ErrorResponse(Exception e) : this()
         {
             this.msg = e.Message;
         }
     }
+
     public enum Codes
     {
         ERROR, LOGIN, SIGNUP, SIGNOUT, LOAD_CHAT, GET_ALL_CHATS, SEND_MESSAGE, CREATE_CHAT, ADD_USER
     }
+
     public enum Defines
     {
         LEN_END = 5,

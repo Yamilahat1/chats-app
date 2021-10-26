@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Server;
 using System.Collections.Generic;
-using System.Text;
-using Server;
 
 namespace Managers
 {
-    class User
+    internal class User
     {
         private string username;
         private string password;
@@ -18,6 +16,7 @@ namespace Managers
             this.status = status;
         }
     }
+
     public class LoginManager
     {
         private static Dictionary<string, User> m_loggedUsers = new Dictionary<string, User>();
