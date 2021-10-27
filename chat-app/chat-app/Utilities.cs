@@ -36,7 +36,7 @@ namespace Utilities
 
     public struct AddUserRequest
     {
-        public string nickname;
+        public string Tag;
         public int chatID;
     }
 
@@ -44,7 +44,16 @@ namespace Utilities
     {
         public int status;
     }
-
+    public struct RemoveUserRequest
+    {
+        public string tag;
+        public int chatID;
+        public int senderID;
+    }
+    public struct RemoveUserResponse
+    {
+        public int status;
+    }
     public struct CreateChatRequest
     {
         public string chatName;
@@ -120,7 +129,7 @@ namespace Utilities
 
     public enum Codes
     {
-        ERROR, LOGIN, SIGNUP, SIGNOUT, LOAD_CHAT, GET_ALL_CHATS, SEND_MESSAGE, CREATE_CHAT, ADD_USER
+        ERROR, LOGIN, SIGNUP, SIGNOUT, LOAD_CHAT, GET_ALL_CHATS, SEND_MESSAGE, CREATE_CHAT, ADD_USER, REMOVE_USER
     }
 
     public enum Defines

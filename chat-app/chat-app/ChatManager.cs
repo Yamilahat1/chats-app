@@ -55,6 +55,12 @@ namespace Managers
         /// <param name="nickname"> The user's nickname </param>
         /// <param name="chatID"> The id of the chat </param>
         /// <returns></returns>
-        public static int AddUserToChat(string nickname, int chatID) => SqliteDatabase.AddUserToChat(chatID, nickname);
+        public static int AddUserToChat(string tag, int chatID) => SqliteDatabase.AddUserToChat(chatID, tag);
+
+        public static int RemoveUserFromChat(int senderID, string tag, int chatID)
+        {
+            if (SqliteDatabase.GetChatAdmin(chatID) != senderID) return 0;
+            return SqliteDatabase.RemoveUserFromChat(chatID, tag);
+        }
     }
 }

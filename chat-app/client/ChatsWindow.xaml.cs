@@ -132,7 +132,12 @@ namespace client
             foreach (var chat in m_chats) if (chat.Key == chatName) return chat.Value;
             return -1;
         }
-
+        
+        private string GetChatName(int id)
+        {
+            foreach (var chat in m_chats) if (chat.Value == id) return chat.Key;
+            return "";
+        }
         private Message LoadMessage(int chatID)
         {
             m_requests.Enqueue(1);
@@ -148,7 +153,7 @@ namespace client
                 return new Message();
             }
             m_offset++;
-            return new Message() { Msg = string.Format("{0}: {1}", res["Sender"] == m_username ? "You" : res["Sender"], res["Content"]) };
+            return new Message() { Msg = string.Format("{0} (#{1}): {2}", res["Sender"] == m_username ? "You" : res["Sender"], res["Tag"], res["Content"]) };
         }
 
         private void LoadChat()
@@ -205,6 +210,12 @@ namespace client
         private void btnOptions_Click(object sender, RoutedEventArgs e)
         {
             CreateChat win = new CreateChat(this, m_id);
+            win.ShowDialog();
+        }
+
+        private void btnViewChat_Click(object sender, RoutedEventArgs e)
+        {
+            ViewChat win = new ViewChat(GetChatName(m_currentChat), m_currentChat, m_id);
             win.ShowDialog();
         }
     }

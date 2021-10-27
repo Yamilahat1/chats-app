@@ -127,7 +127,17 @@ namespace Deserializer
             AddUserRequest obj;
             var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
             obj.chatID = Convert.ToInt32(parsed["ChatID"]);
-            obj.nickname = parsed["Nickname"];
+            obj.Tag = parsed["Tag"];
+            return obj;
+        }
+        
+        public static RemoveUserRequest DeserializeRemoveUserRequest(List<char> buff)
+        {
+            RemoveUserRequest obj;
+            var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
+            obj.chatID = Convert.ToInt32(parsed["chatID"]);
+            obj.tag = parsed["Tag"];
+            obj.senderID = Convert.ToInt32(parsed["SenderID"]);
             return obj;
         }
     }

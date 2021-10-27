@@ -21,6 +21,10 @@ namespace Server
 
             StreamReader objReader = new StreamReader(objStream);
             dynamic json = JsonConvert.DeserializeObject(objReader.ReadToEnd());
+            foreach (var category in json.categories)
+            {
+                if (category.Value == "explicit") return GetRequest(url);
+            }
             return json.value;
         }
     }

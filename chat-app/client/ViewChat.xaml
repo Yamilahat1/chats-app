@@ -1,0 +1,19 @@
+﻿<Window x:Class="client.ViewChat"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="ViewChat" Height="450" Width="300">
+    <Grid>
+        <Label x:Name="txtChatName" Content="ChatName" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" Height="44" Margin="51,42,57,0" VerticalAlignment="Top" FontSize="17" Width="184"/>
+        <Label Content="Participants:" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" HorizontalAlignment="Center" Height="44" Margin="10,91,191,0" VerticalAlignment="Top" FontSize="14" Width="91"/>
+        <ListBox x:Name="lstUsers" HorizontalAlignment="Left" Height="178" Margin="101,106,0,0" VerticalAlignment="Top" Width="132" SelectionChanged="lstUsers_SelectionChanged"/>
+        <Button x:Name="btnDelete" Content="Delete Chat" Background="Red" HorizontalAlignment="Left" Height="25" Margin="163,332,0,0" VerticalAlignment="Top" Width="72"/>
+        <Button x:Name="btnAddUser" Content="Add User" HorizontalAlignment="Left" Height="25" Margin="77,302,0,0" VerticalAlignment="Top" Width="81" Click="btnAddUser_Click"/>
+        <Button x:Name="btnChangeName" Content="Rename" HorizontalAlignment="Left" Height="25" Margin="163,302,0,0" VerticalAlignment="Top" Width="72" Click="btnChangeName_Click"/>
+        <Button x:Name="btnRemoveUser" Content="Remove User" HorizontalAlignment="Left" Height="25" Margin="77,332,0,0" VerticalAlignment="Top" Width="81" Click="btnRemoveUser_Click"/>
+
+    </Grid>
+</Window>

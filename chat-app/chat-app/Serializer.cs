@@ -129,5 +129,10 @@ namespace Serializer
         {
             return Serialize("AddUser", new Dictionary<string, string> { { "Status", res.status.ToString() } }, Codes.CREATE_CHAT);
         }
+
+        public static List<char> SerializeResponse(RemoveUserResponse res)
+        {
+            return Serialize("RemoveUser", new Dictionary<string, string> { { "Status", res.status.ToString() } }, Codes.REMOVE_USER);
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace Server
                 CreateTables();
                 InitDefaults();
             }
-            catch (Exception e) { Console.WriteLine(e.Message); }
+            catch (Exception e) { }
         }
 
         /// <summary>
@@ -115,9 +115,9 @@ namespace Server
         /// </summary>
         /// <param name="username"> The user's username </param>
         /// <param name="password"> The user's password </param>
-        public static void AddUser(string username, string password, string tag = "")
+        public static void AddUser(string username, string password)
         {
-            tag = tag == "" ? RandomTag() : tag;
+            string tag = RandomTag();
             string salt = Guid.NewGuid().ToString();
             password = HashString(password, salt);
             Execute(string.Format("INSERT INTO tUser(username, password, salt, nickname, tag, status) VALUES ('{0}', '{1}', '{2}', '{0}', '{3}', \"{4}\");", username, password, salt, tag, ApiAccess.GetRequest(@"https://api.chucknorris.io/jokes/random").Replace('"', '\'')));
@@ -221,7 +221,8 @@ namespace Server
         public static Dictionary<string, string> LoadMessage(int roomID, int offset = 0)
         {
             var msg = new Dictionary<string, string> { };
-            m_db.CommandText = string.Format("SELECT userID, message, id FROM tMessage WHERE roomID={0} LIMIT 1 OFFSET {1}", roomID, offset);
+            // m_db.CommandText = string.Format("SELECT userID, message, id FROM tMessage WHERE roomID={0} LIMIT 1 OFFSET {1}", roomID, offset);
+            m_db.CommandText = $"SELECT userID, tag, message, tMessage.id FROM tMessage INNER JOIN tUser ON tUser.id = tMessage.userID WHERE roomID = {roomID} LIMIT 1 OFFSET {offset};";
             SQLiteDataReader reader = m_db.ExecuteReader();
             reader.Read();
             if (!reader.HasRows)
@@ -230,11 +231,13 @@ namespace Server
                 return new Dictionary<string, string> { };
             }
             int userID = Convert.ToInt32(reader.GetValue(0).ToString());
-            string content = reader.GetValue(1).ToString();
-            string msgID = reader.GetValue(2).ToString();
+            string userTag = reader.GetValue(1).ToString();
+            string content = reader.GetValue(2).ToString();
+            string msgID = reader.GetValue(3).ToString();
             reader.Close();
 
             msg.Add("Sender", GetNickname(userID));
+            msg.Add("Tag", userTag);
             msg.Add("Content", content);
             msg.Add("MessageID", msgID);
             return msg;
@@ -293,7 +296,7 @@ namespace Server
             m_db.CommandText = "SELECT last_insert_rowid();";
             Int64 id = (Int64)m_db.ExecuteScalar();
             int chatID = (int)id;
-            AddUserToChat(chatID, GetNickname(admin));
+            AddUserToChat(chatID, GetTagByID(admin));
             return chatID;
         }
 
@@ -328,22 +331,22 @@ namespace Server
         /// <param name="chatID"> The chat's id </param>
         /// <param name="nickname"> The nickname of the user </param>
         /// <returns> Status </returns>
-        public static int AddUserToChat(int chatID, string nickname)
+        public static int AddUserToChat(int chatID, string tag)
         {
-            int userID = GetIDByNick(nickname);
+            int userID = GetIDByTag(tag);
             if (IsUserInChat(chatID, userID)) return 0;
             Execute(string.Format("INSERT INTO tParticipants(userID, roomID) VALUES ({0}, {1});", userID.ToString(), chatID.ToString()));
             return 1;
         }
 
         /// <summary>
-        /// Method will find the ID of a user according to his nickname
+        /// Method will find the ID of a user according to his tag
         /// </summary>
-        /// <param name="nickname"></param>
-        /// <returns></returns>
-        private static int GetIDByNick(string nickname)
+        /// <param name="tag"> The user's tag </param>
+        /// <returns> The user's id </returns>
+        private static int GetIDByTag(string tag)
         {
-            m_db.CommandText = string.Format("SELECT id FROM tUser WHERE nickname=\"{0}\"", nickname);
+            m_db.CommandText = string.Format("SELECT id FROM tUser WHERE tag=\"{0}\"", tag);
             SQLiteDataReader reader = m_db.ExecuteReader();
             reader.Read();
             int id = Convert.ToInt32(reader.GetValue(0).ToString());
@@ -352,14 +355,40 @@ namespace Server
         }
 
         /// <summary>
+        /// Method will find user's tag by his id
+        /// </summary>
+        /// <param name="id"> The user's id </param>
+        /// <returns> The user's tag </returns>
+        private static string GetTagByID(int id)
+        {
+            m_db.CommandText = string.Format("SELECT tag FROM tUser WHERE id={0}", id.ToString());
+            SQLiteDataReader reader = m_db.ExecuteReader();
+            reader.Read();
+            string tag = reader.GetValue(0).ToString();
+            reader.Close();
+            return tag;
+        }
+
+        /// <summary>
         /// Method will remove user from chat
         /// </summary>
         /// <param name="chatID"> The user's id </param>
         /// <param name="userID"> The chat's id </param>
-        public static void RemoveUserFromChat(int chatID, int userID)
+        public static int RemoveUserFromChat(int chatID, string tag)
         {
-            if (!IsUserInChat(chatID, userID)) return;
+            int userID = GetIDByTag(tag);
+            if (!IsUserInChat(chatID, userID)) return 0;
             Execute(string.Format("DELETE FROM tParticipants WHERE roomID = {0} AND userID = {1};", chatID.ToString(), userID.ToString()));
+            return 1;
+        }
+        public static int GetChatAdmin(int chatID)
+        {
+            m_db.CommandText = string.Format("SELECT admin FROM tChat WHERE id={0}", chatID.ToString());
+            SQLiteDataReader reader = m_db.ExecuteReader();
+            reader.Read();
+            int admin = Convert.ToInt32(reader.GetValue(0).ToString());
+            reader.Close();
+            return admin;
         }
     }
 }

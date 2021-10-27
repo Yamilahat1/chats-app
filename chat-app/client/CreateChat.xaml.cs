@@ -22,11 +22,12 @@ namespace client
         {
             bool isOK = true;
             Communicator.Send("CreateChat", new Dictionary<string, string> { { "ChatName", txtChatName.Text }, { "AdminID", m_userID.ToString() } }, Code.CreateChat);
-            string chatID = Communicator.Recv()["ChatID"];
+            var a = Communicator.Recv();
+            string chatID = a["ChatID"];
 
             foreach (string user in txtParticipants.Text.Split(','))
             {
-                Communicator.Send("AddUser", new Dictionary<string, string> { { "Nickname", user }, { "ChatID", chatID } }, Code.AddUserToChat);
+                Communicator.Send("AddUser", new Dictionary<string, string> { { "Tag", user.Substring(user.IndexOf('#') + 1) }, { "ChatID", chatID } }, Code.AddUserToChat);
                 try
                 {
                     if (Communicator.Recv()["Status"] != "1") DisplayError($"Couldn't add {user}", false);
