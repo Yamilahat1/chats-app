@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Security.Cryptography;
 using System.Text;
+using System.Linq;
 
 // Todo: add mutex
 namespace Server
@@ -27,7 +28,7 @@ namespace Server
                 CreateTables();
                 InitDefaults();
             }
-            catch (Exception) { }
+            catch (Exception e) { Console.WriteLine(e.Message); }
         }
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace Server
         private static void CreateTables()
         {
             // Create user table
-            m_db.CommandText = @"CREATE TABLE tUser(id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, salt TEXT, nickname TEXT, status TEXT);";
+            m_db.CommandText = @"CREATE TABLE tUser(id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, salt TEXT, nickname TEXT, tag TEXT, status TEXT);";
             m_db.ExecuteNonQuery();
 
             // Create chat table
@@ -114,11 +115,23 @@ namespace Server
         /// </summary>
         /// <param name="username"> The user's username </param>
         /// <param name="password"> The user's password </param>
-        public static void AddUser(string username, string password)
+        public static void AddUser(string username, string password, string tag = "")
         {
+            tag = tag == "" ? RandomTag() : tag;
             string salt = Guid.NewGuid().ToString();
             password = HashString(password, salt);
-            Execute(string.Format("INSERT INTO tUser(username, password, salt, nickname, status) VALUES ('{0}', '{1}', '{2}', '{0}', 'Amogus');", username, password, salt));
+            Execute(string.Format("INSERT INTO tUser(username, password, salt, nickname, tag, status) VALUES ('{0}', '{1}', '{2}', '{0}', '{3}', \"{4}\");", username, password, salt, tag, ApiAccess.GetRequest(@"https://api.chucknorris.io/jokes/random").Replace('"', '\'')));
+        }
+
+        /// <summary>
+        /// Method will produce a random user tag
+        /// </summary>
+        /// <returns> Random tag </returns>
+        private static string RandomTag()
+        {
+            Random random = new Random();
+            string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            return new string(Enumerable.Repeat(chars, 6).Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
         /// <summary>
