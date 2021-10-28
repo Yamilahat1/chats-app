@@ -390,5 +390,26 @@ namespace Server
             reader.Close();
             return admin;
         }
+        public static Dictionary<string, string> GetChatDetails(int chatID)
+        {
+            m_db.CommandText = $"SELECT name FROM tChat WHERE id = {chatID};";
+            SQLiteDataReader reader = m_db.ExecuteReader();
+            reader.Read();
+            string chatName = reader.GetValue(0).ToString();
+            reader.Close();
+            string users = "";
+            m_db.CommandText = $"SELECT nickname, tag FROM tUser WHERE id = (SELECT userID FROM tParticipants WHERE roomID = {chatID.ToString()});";
+            reader = m_db.ExecuteReader();
+            while (reader.Read())
+            {
+                for (int i = 0; i < reader.FieldCount-1; i++)
+                {
+                    users += $"{reader.GetValue(i)}#{reader.GetValue(i+1)},";
+                }
+            }
+            users = users.Remove(users.Length - 1, 1);
+            reader.Close();
+            return new Dictionary<string, string> { { "ChatName", chatName } , { "Users", users } };
+        }
     }
 }

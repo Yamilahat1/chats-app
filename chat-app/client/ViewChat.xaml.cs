@@ -27,6 +27,7 @@ namespace client
         private int m_chatID;
         private int m_userID;
         private bool kill = false;
+        private bool received = true;
         public ViewChat(string chatName, int chatID, int userID)
         {
             m_chatID = chatID;
@@ -34,13 +35,15 @@ namespace client
             m_chatName = chatName;
             InitializeComponent();
             txtChatName.Content = chatName;
-
+            UpdateDetails();
+            /*
             m_bw.WorkerSupportsCancellation = true;
             m_bw.WorkerReportsProgress = true;
             m_bw.DoWork += m_bw_DoWork;
             m_bw.ProgressChanged += m_bw_ProgressChanged;
             m_bw.RunWorkerCompleted += m_bw_RunWorkerCompleted;
             m_bw.RunWorkerAsync();
+            */
         }
 
         private void m_bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -55,15 +58,21 @@ namespace client
 
         private void UpdateDetails()
         {
-
+            received = false;
+            Communicator.Send("ChatDetails", new Dictionary<string, string> { { "ChatID", m_chatID.ToString() } }, Code.ChatDetails);
+            var details = Communicator.Recv();
+            received = true;
+            lstUsers.Items.Clear();
+            foreach (var user in details["Participants"].Split(',')) lstUsers.Items.Add(user);
+            txtChatName.Content = details["ChatName"];
         }
 
         private void m_bw_DoWork(object sender, DoWorkEventArgs e)
         {
             while (!kill)
             {
-                m_bw.ReportProgress(0);
-                Thread.Sleep(1000);
+                if (received) m_bw.ReportProgress(0);
+                Thread.Sleep(3000);
             }
             e.Cancel = true;
         }

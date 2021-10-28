@@ -134,5 +134,10 @@ namespace Serializer
         {
             return Serialize("RemoveUser", new Dictionary<string, string> { { "Status", res.status.ToString() } }, Codes.REMOVE_USER);
         }
+
+        public static List<char> SerializeResponse(GetChatDetailsResponse res)
+        {
+            return Serialize("ChatDetails", new Dictionary<string, string> { { "ChatName", res.chatName }, { "Participants", res.users } }, Codes.GET_CHAT_DETAILS);
+        }
     }
 }

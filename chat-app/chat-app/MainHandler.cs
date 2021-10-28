@@ -13,7 +13,7 @@ namespace Handlers
         /// <returns> If the request is valid or not </returns>
         public override bool Validation(RequestInfo req)
         {
-            return (uint)Codes.SIGNOUT <= req.id && req.id <= (uint)Codes.REMOVE_USER;
+            return (uint)Codes.SIGNOUT <= req.id && req.id <= (uint)Codes.GET_CHAT_DETAILS;
         }
 
         /// <summary>
@@ -50,6 +50,9 @@ namespace Handlers
 
                     case (uint)Codes.REMOVE_USER:
                         return RemoveUserFromChat(req);
+
+                    case (uint)Codes.GET_CHAT_DETAILS:
+                        return GetChatDetails(req);
                 }
             }
             catch (Exception e)
@@ -180,6 +183,21 @@ namespace Handlers
             removeUserReq = Deserializer.Deserializer.DeserializeRemoveUserRequest(reqInfo.buffer);
             removeUserRes.status = ChatManager.RemoveUserFromChat(removeUserReq.senderID, removeUserReq.tag, removeUserReq.chatID);
             res.response = Serializer.Serializer.SerializeResponse(removeUserRes);
+            return res;
+        }
+        private RequestResult GetChatDetails(RequestInfo reqInfo)
+        {
+            Console.WriteLine("asdjon");
+            RequestResult res = new RequestResult();
+            GetChatDetailsResponse resp;
+            GetChatDetailsRequest req;
+            res.newHandler = null;
+            req = Deserializer.Deserializer.DeserializeGetChatDetailsRequest(reqInfo.buffer);
+
+            var values = ChatManager.GetChatDetails(req.chatID);
+            resp.chatName = values["ChatName"];
+            resp.users = values["Participants"];
+            res.response = Serializer.Serializer.SerializeResponse(resp);
             return res;
         }
     }
