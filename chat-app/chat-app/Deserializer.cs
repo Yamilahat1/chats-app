@@ -140,5 +140,14 @@ namespace Deserializer
             obj.senderID = Convert.ToInt32(parsed["SenderID"]);
             return obj;
         }
+
+        public static GetChatDetailsRequest DeserializeGetChatDetailsRequest(List<char> buff)
+        {
+            GetChatDetailsRequest obj;
+            var parsed = XmlManagement.XmlManagement.XmlDeserialization(buff.ExtractData());
+            obj.chatID = Convert.ToInt32(parsed["ChatID"]);
+            return obj;
+
+        }
     }
 }

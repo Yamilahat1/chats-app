@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace Utilities
 {
+    public struct GetChatDetailsRequest
+    {
+        public int chatID;
+    }
+    public struct GetChatDetailsResponse
+    {
+        public string chatName;
+        public string users;
+    }
     public struct SignoutRequest
     {
         public string username;
@@ -129,7 +138,7 @@ namespace Utilities
 
     public enum Codes
     {
-        ERROR, LOGIN, SIGNUP, SIGNOUT, LOAD_CHAT, GET_ALL_CHATS, SEND_MESSAGE, CREATE_CHAT, ADD_USER, REMOVE_USER
+        ERROR, LOGIN, SIGNUP, SIGNOUT, LOAD_CHAT, GET_ALL_CHATS, SEND_MESSAGE, CREATE_CHAT, ADD_USER, REMOVE_USER, GET_CHAT_DETAILS
     }
 
     public enum Defines

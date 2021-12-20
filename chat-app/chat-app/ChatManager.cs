@@ -62,5 +62,6 @@ namespace Managers
             if (SqliteDatabase.GetChatAdmin(chatID) != senderID) return 0;
             return SqliteDatabase.RemoveUserFromChat(chatID, tag);
         }
+        public static Dictionary<string, string> GetChatDetails(int chatID) => SqliteDatabase.GetChatDetails(chatID);
     }
 }
