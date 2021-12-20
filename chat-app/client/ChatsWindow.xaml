@@ -50,6 +50,6 @@
         <Rectangle x:Name="Top" Fill="#FFF4F4F5" Grid.Column="0" HorizontalAlignment="Left" Height="25" Stroke="Black" VerticalAlignment="Top" Width="792" MouseDown="Top_MouseDown" Margin="0,-3,0,0" />
         <Ellipse Fill="#AF0606" HorizontalAlignment="Left" Height="18" Margin="770,1,0,0" Stroke="Black" VerticalAlignment="Top" Width="18" MouseUp="Quit_Click" RenderTransformOrigin="-4.389,3" />
         <Button x:Name="btnOptions" Content="Options" HorizontalAlignment="Left" Height="57" Margin="10,375,0,0" VerticalAlignment="Top" BorderThickness="0" Background="White" Width="167" Click="btnOptions_Click" />
-        <Button x:Name="btnViewChat" Content="View Chat" HorizontalAlignment="Left" Height="36" Margin="688,396,0,0" VerticalAlignment="Top" BorderThickness="0" Background="White" Width="77" Click="btnViewChat_Click"/>
+        <Button x:Name="btnViewChat" IsEnabled="False" Content="View Chat" HorizontalAlignment="Left" Height="36" Margin="688,396,0,0" VerticalAlignment="Top" BorderThickness="0" Background="White" Width="77" Click="btnViewChat_Click"/>
     </Grid>
 </Window>
